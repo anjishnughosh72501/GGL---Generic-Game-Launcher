@@ -15,7 +15,14 @@ import {
 import { GameItem, ViewMode } from '../types/game';
 import { useGameStore } from '../store/gameStore';
 import { showItemInFolder } from '../services/launcher';
-import { resolveAppIcon, getMonogram, getSoftSlateGradient, getKnownCoverUrl } from '../services/artwork';
+import {
+  resolveAppIcon,
+  getMonogram,
+  getSoftSlateGradient,
+  getKnownCoverUrl,
+  resolveGameCover,
+  getSecondaryCoverUrl,
+} from '../services/artwork';
 
 interface AppCardProps {
   item: GameItem;
@@ -29,6 +36,7 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
     toggleHide,
     deleteGame,
     setEditingGame,
+    updateGame,
     executeLaunch,
     activeLaunch,
     activeMenuId,
@@ -36,6 +44,10 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
   } = useGameStore();
 
   const isDark = settings.themeMode === 'dark';
+  const [coverUrl, setCoverUrl] = useState<string | null>(
+    item.coverUrl || getKnownCoverUrl(item.title) || null
+  );
+  const [triedSecondary, setTriedSecondary] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [iconUrl, setIconUrl] = useState<string | null>(item.iconUrl || null);
   const isMenuOpen = activeMenuId === item.id;
@@ -43,16 +55,63 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
   const isCurrentLaunching = activeLaunch?.item.id === item.id;
   const isRunning = isCurrentLaunching && activeLaunch?.step === 'running';
 
-  // Auto-resolve native icon for apps without cover art
+  // Synchronize local coverUrl if item prop updates
   useEffect(() => {
-    if (item.iconUrl) {
-      setIconUrl(item.iconUrl);
-    } else if (!item.coverUrl && !iconUrl && item.executablePath) {
-      resolveAppIcon(item.executablePath).then((resolved) => {
-        if (resolved) setIconUrl(resolved);
+    if (item.coverUrl) {
+      setCoverUrl(item.coverUrl);
+      setImageError(false);
+      setTriedSecondary(false);
+    }
+  }, [item.coverUrl]);
+
+  // Universal dynamic cover resolver for any game lacking cover art
+  useEffect(() => {
+    let active = true;
+    if (!coverUrl && item.category === 'game') {
+      resolveGameCover(item.title, item.installDir).then((resolved) => {
+        if (active && resolved) {
+          setCoverUrl(resolved);
+          setImageError(false);
+          updateGame(item.id, { coverUrl: resolved });
+        }
       });
     }
-  }, [item.coverUrl, item.executablePath, item.iconUrl, iconUrl]);
+    return () => {
+      active = false;
+    };
+  }, [coverUrl, item.id, item.title, item.installDir, item.category, updateGame]);
+
+  // Auto-resolve native icon for apps without icon or cover art
+  useEffect(() => {
+    let active = true;
+    if (item.iconUrl) {
+      setIconUrl(item.iconUrl);
+    } else if (!iconUrl && item.executablePath) {
+      resolveAppIcon(item.executablePath).then((resolved) => {
+        if (active && resolved) {
+          setIconUrl(resolved);
+          if (!item.iconUrl) {
+            updateGame(item.id, { iconUrl: resolved });
+          }
+        }
+      });
+    }
+    return () => {
+      active = false;
+    };
+  }, [item.id, item.iconUrl, item.executablePath, iconUrl, updateGame]);
+
+  const handleImageError = () => {
+    if (coverUrl && !triedSecondary) {
+      const secondary = getSecondaryCoverUrl(coverUrl);
+      if (secondary && secondary !== coverUrl) {
+        setTriedSecondary(true);
+        setCoverUrl(secondary);
+        return;
+      }
+    }
+    setImageError(true);
+  };
 
   // Dedicated Play Button Click Handler - ONLY this button launches the game!
   const handlePlayButtonClick = async (e: React.MouseEvent) => {
@@ -84,8 +143,7 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
   };
 
   const isSquare = viewMode === 'grid-square';
-  const effectiveCover = item.coverUrl || getKnownCoverUrl(item.title);
-  const hasCover = !imageError && Boolean(effectiveCover);
+  const hasCover = !imageError && Boolean(coverUrl);
 
   return (
     <motion.div
@@ -109,10 +167,10 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
         {/* Tier 1 & 3: Cover Image with Smooth Hover Zoom */}
         {hasCover ? (
           <img
-            src={effectiveCover!}
+            src={coverUrl!}
             alt={item.title}
             className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108 group-hover:brightness-105"
-            onError={() => setImageError(true)}
+            onError={handleImageError}
             loading="lazy"
           />
         ) : iconUrl ? (
@@ -122,7 +180,12 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
             style={{ background: getSoftSlateGradient(item.title, isDark) }}
           >
             <div className="w-16 h-16 rounded-2xl p-2.5 bg-white/10 dark:bg-black/20 backdrop-blur-md shadow-md border border-white/10 flex items-center justify-center transition-all duration-300 group-hover:scale-115 group-hover:shadow-lg">
-              <img src={iconUrl} alt={item.title} className="w-full h-full object-contain" />
+              <img
+                src={iconUrl}
+                alt={item.title}
+                className="w-full h-full object-contain"
+                onError={() => setIconUrl(null)}
+              />
             </div>
             <span
               className={`text-xs font-semibold mt-3 text-center line-clamp-2 px-3 transition-colors ${

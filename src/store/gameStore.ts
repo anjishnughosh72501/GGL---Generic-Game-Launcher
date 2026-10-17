@@ -9,7 +9,7 @@ import {
   LaunchProcessState,
 } from '../types/game';
 import { scanAllPlatforms, scanSystemApplications, UnifiedScanSummary } from '../services/scanners';
-import { resolveAppIcon } from '../services/artwork';
+import { resolveAppIcon, resolveGameCover } from '../services/artwork';
 import { launchGame } from '../services/launcher';
 
 interface StoredData {
@@ -157,6 +157,45 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
     }
 
     get().loadSystemApps();
+
+    // Universal Background Thumbnail Enrichment:
+    // Any existing game missing coverUrl or iconUrl is resolved in background and persisted
+    setTimeout(async () => {
+      const current = get().games;
+      for (const g of current) {
+        let changed = false;
+        let cover = g.coverUrl;
+        let icon = g.iconUrl;
+
+        if (!cover && g.category === 'game') {
+          try {
+            const resolved = await resolveGameCover(g.title, g.installDir);
+            if (resolved) {
+              cover = resolved;
+              changed = true;
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        if (!icon && g.executablePath) {
+          try {
+            const resolvedIcon = await resolveAppIcon(g.executablePath);
+            if (resolvedIcon) {
+              icon = resolvedIcon;
+              changed = true;
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        if (changed) {
+          await get().updateGame(g.id, { coverUrl: cover, iconUrl: icon });
+        }
+      }
+    }, 1200);
   },
 
   setThemeMode: (themeMode) => {
@@ -285,6 +324,16 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
         app.name + ' ' + (app.launchArgs || '')
       );
 
+    let coverUrl: string | undefined = undefined;
+    if (isGame) {
+      try {
+        const resolved = await resolveGameCover(app.name, app.installDir || app.targetPath);
+        if (resolved) coverUrl = resolved;
+      } catch (e) {
+        // ignore
+      }
+    }
+
     const newItem: GameItem = {
       id: `sys-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
       title: app.name,
@@ -293,6 +342,7 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
       executablePath: app.targetPath,
       launchArgs: app.launchArgs,
       installDir: app.installDir || '',
+      coverUrl,
       iconUrl,
       isCustom: true,
       playCount: 0,
@@ -318,6 +368,16 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
       // ignore
     }
 
+    let coverUrl = newApp.coverUrl;
+    if (!coverUrl && newApp.category === 'game') {
+      try {
+        const resolved = await resolveGameCover(newApp.title, newApp.executablePath);
+        if (resolved) coverUrl = resolved;
+      } catch (e) {
+        // ignore
+      }
+    }
+
     const newItem: GameItem = {
       id: `custom-${Date.now()}`,
       title: newApp.title.trim(),
@@ -325,7 +385,7 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
       platform: 'custom',
       executablePath: newApp.executablePath,
       launchArgs: newApp.launchArgs,
-      coverUrl: newApp.coverUrl,
+      coverUrl,
       iconUrl,
       installDir: newApp.executablePath.replace(/[/\\][^/\\]+$/, ''),
       isCustom: true,

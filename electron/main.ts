@@ -287,8 +287,92 @@ function setupIpcHandlers() {
     }
   });
 
-  // 6. Platform Game Scanners
+  // 6. Universal Game Artwork Search (Local Folder + Online Steam Store CDN)
+  ipcMain.handle('search-game-artwork', async (_event, title: string, installDir?: string) => {
+    // Check local directory for cover / poster files first
+    if (installDir && fs.existsSync(installDir)) {
+      try {
+        const files = await fs.promises.readdir(installDir);
+        const coverFile = files.find((f) =>
+          /^(cover|poster|folder|boxart|header|capsule)\.(jpe?g|png|webp)$/i.test(f)
+        );
+        if (coverFile) {
+          const fullPath = path.join(installDir, coverFile);
+          return { coverUrl: `file:///${fullPath.replace(/\\/g, '/')}`, iconUrl: null };
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // Dynamic Steam Store Search API (works universally for all PC titles)
+    const cleanTitle = title
+      .replace(/\s*\(.*?\)/g, '')
+      .replace(/\s*\[.*?\]/g, '')
+      .replace(/[_-]/g, ' ')
+      .trim();
+
+    try {
+      const url = `https://store.steampowered.com/api/storesearch/?term=${encodeURIComponent(
+        cleanTitle
+      )}&l=english&cc=US`;
+      const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+      if (res.ok) {
+        const data: any = await res.json();
+        if (data.items && data.items.length > 0) {
+          const match = data.items[0];
+          const libraryUrl = `https://steamcdn-a.akamaihd.net/steam/apps/${match.id}/library_600x900_2x.jpg`;
+          
+          // Verify if the 600x900 poster exists
+          try {
+            const headRes = await fetch(libraryUrl, { method: 'HEAD', headers: { 'User-Agent': 'Mozilla/5.0' } });
+            if (headRes.ok) {
+              return {
+                coverUrl: libraryUrl,
+                iconUrl: match.tiny_image || null,
+              };
+            }
+          } catch {
+            // head check failed, proceed to appdetails
+          }
+
+          // If 600x900 is absent, query appdetails for authentic high-res header image
+          try {
+            const detailsRes = await fetch(`https://store.steampowered.com/api/appdetails?appids=${match.id}`);
+            if (detailsRes.ok) {
+              const detailsData: any = await detailsRes.json();
+              if (detailsData[match.id]?.success && detailsData[match.id]?.data) {
+                const appInfo = detailsData[match.id].data;
+                const headerCover = appInfo.header_image || appInfo.capsule_image || match.tiny_image;
+                if (headerCover) {
+                  return {
+                    coverUrl: headerCover,
+                    iconUrl: match.tiny_image || null,
+                  };
+                }
+              }
+            }
+          } catch {
+            // details fetch failed
+          }
+
+          // Fallback to tiny_image or libraryUrl
+          return {
+            coverUrl: match.tiny_image || libraryUrl,
+            iconUrl: match.tiny_image || null,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn(`Error querying Steam artwork for ${title}:`, e);
+    }
+
+    return { coverUrl: null, iconUrl: null };
+  });
+
+  // 7. Platform Game Scanners
   ipcMain.handle('scan-all-platforms', async () => {
+
     const [steam, epic, gog] = await Promise.all([
       scanNativeSteam(),
       scanNativeEpic(),
@@ -436,8 +520,23 @@ async function scanNativeEpic(): Promise<PlatformScanResult> {
           const manifest = parseEpicManifest(raw);
           if (manifest) {
             const item = epicManifestToGameItem(manifest);
+            let coverUrl = item.coverUrl;
+            if (!coverUrl && manifest.InstallLocation && fs.existsSync(manifest.InstallLocation)) {
+              try {
+                const files = await fs.promises.readdir(manifest.InstallLocation);
+                const coverFile = files.find((f) =>
+                  /^(cover|poster|folder|boxart|header|capsule)\.(jpe?g|png|webp)$/i.test(f)
+                );
+                if (coverFile) {
+                  coverUrl = `file:///${path.join(manifest.InstallLocation, coverFile).replace(/\\/g, '/')}`;
+                }
+              } catch (e) {
+                // ignore
+              }
+            }
             games.push({
               ...item,
+              coverUrl,
               category: 'game',
             });
           }
@@ -555,6 +654,13 @@ function findPrimaryGameExecutable(folderName: string, files: string[]): string 
                   (g) => g.title.toLowerCase() === title.toLowerCase()
                 );
                 if (!alreadyFound) {
+                  let coverUrl: string | undefined = undefined;
+                  const coverFile = files.find((f) =>
+                    /^(cover|poster|folder|boxart|header|capsule)\.(jpe?g|png|webp)$/i.test(f)
+                  );
+                  if (coverFile) {
+                    coverUrl = `file:///${path.join(gameDir, coverFile).replace(/\\/g, '/')}`;
+                  }
                   games.push({
                     id: `generic-${dirent.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
                     title,
@@ -562,6 +668,7 @@ function findPrimaryGameExecutable(folderName: string, files: string[]): string 
                     platform: 'gog',
                     installDir: gameDir,
                     executablePath: path.join(gameDir, exe),
+                    coverUrl,
                     isCustom: false,
                     playCount: 0,
                     lastPlayed: null,

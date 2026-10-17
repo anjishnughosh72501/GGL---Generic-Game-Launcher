@@ -12,7 +12,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
-import { getKnownCoverUrl, resolveAppIcon } from '../services/artwork';
+import { getKnownCoverUrl, resolveAppIcon, resolveGameCover } from '../services/artwork';
 import { showItemInFolder } from '../services/launcher';
 
 type EditTab = 'general' | 'execution' | 'artwork';
@@ -34,6 +34,7 @@ export const EditGameModal: React.FC = () => {
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [isExtractingIcon, setIsExtractingIcon] = useState(false);
+  const [isSearchingCover, setIsSearchingCover] = useState(false);
 
   useEffect(() => {
     if (editingGame) {
@@ -111,10 +112,15 @@ export const EditGameModal: React.FC = () => {
     }
   };
 
-  const handleFetchKnownCover = () => {
-    const known = getKnownCoverUrl(title);
-    if (known) {
-      setCoverUrl(known);
+  const handleAutoFindCover = async () => {
+    setIsSearchingCover(true);
+    try {
+      const resolved = await resolveGameCover(title, installDir);
+      if (resolved) {
+        setCoverUrl(resolved);
+      }
+    } finally {
+      setIsSearchingCover(false);
     }
   };
 
@@ -484,16 +490,15 @@ export const EditGameModal: React.FC = () => {
                   <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                     Cover / Poster Artwork (2:3 Aspect)
                   </span>
-                  {getKnownCoverUrl(title) && (
-                    <button
-                      type="button"
-                      onClick={handleFetchKnownCover}
-                      className="flex items-center gap-1 text-[11px] font-medium text-emerald-500 hover:underline cursor-pointer"
-                    >
-                      <Sparkles className="w-3 h-3" />
-                      <span>Use Official Steam Poster</span>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={handleAutoFindCover}
+                    disabled={isSearchingCover}
+                    className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-500 hover:text-emerald-400 cursor-pointer transition-colors"
+                  >
+                    <Sparkles className={`w-3.5 h-3.5 ${isSearchingCover ? 'animate-spin' : ''}`} />
+                    <span>{isSearchingCover ? 'Searching Steam & Local...' : 'Auto-Find Artwork (Steam/Local)'}</span>
+                  </button>
                 </div>
 
                 <div className="flex gap-4 items-start">

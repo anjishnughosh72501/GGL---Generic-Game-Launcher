@@ -1,9 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, Star, FolderOpen, Edit2, Clock, Flame, Loader2 } from 'lucide-react';
 import { GameItem } from '../types/game';
 import { useGameStore } from '../store/gameStore';
 import { showItemInFolder } from '../services/launcher';
-import { getMonogram, getKnownCoverUrl } from '../services/artwork';
+import { getMonogram, getKnownCoverUrl, resolveAppIcon, resolveGameCover } from '../services/artwork';
+
+const ListThumbnail: React.FC<{ item: GameItem }> = ({ item }) => {
+  const [src, setSrc] = useState<string | null>(
+    item.iconUrl || item.coverUrl || getKnownCoverUrl(item.title) || null
+  );
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    if (item.iconUrl) {
+      setSrc(item.iconUrl);
+      setHasError(false);
+    } else if (item.coverUrl) {
+      setSrc(item.coverUrl);
+      setHasError(false);
+    } else if (item.executablePath) {
+      resolveAppIcon(item.executablePath).then((extracted) => {
+        if (active && extracted) {
+          setSrc(extracted);
+          setHasError(false);
+        }
+      });
+    } else if (item.category === 'game') {
+      resolveGameCover(item.title, item.installDir).then((cover) => {
+        if (active && cover) {
+          setSrc(cover);
+          setHasError(false);
+        }
+      });
+    }
+    return () => {
+      active = false;
+    };
+  }, [item.iconUrl, item.coverUrl, item.executablePath, item.title, item.installDir, item.category]);
+
+  if (!hasError && src) {
+    return (
+      <img
+        src={src}
+        alt=""
+        className="w-full h-full object-contain p-0.5"
+        onError={() => setHasError(true)}
+      />
+    );
+  }
+
+  return (
+    <span className="text-[10px] font-bold font-mono text-zinc-400">
+      {getMonogram(item.title)}
+    </span>
+  );
+};
 
 interface AppListViewProps {
   items: GameItem[];
@@ -86,17 +138,7 @@ export const AppListView: React.FC<AppListViewProps> = ({ items }) => {
                         isDark ? 'bg-zinc-800 border-zinc-700/60' : 'bg-zinc-100 border-zinc-200'
                       }`}
                     >
-                      {item.iconUrl || item.coverUrl || getKnownCoverUrl(item.title) ? (
-                        <img
-                          src={item.iconUrl || item.coverUrl || getKnownCoverUrl(item.title)!}
-                          alt=""
-                          className="w-full h-full object-contain p-0.5"
-                        />
-                      ) : (
-                        <span className="text-[10px] font-bold font-mono text-zinc-400">
-                          {getMonogram(item.title)}
-                        </span>
-                      )}
+                      <ListThumbnail item={item} />
                     </div>
                     <div>
                       <div className="font-semibold text-zinc-900 dark:text-zinc-100">

@@ -20,6 +20,7 @@ export interface ElectronAPI {
   indexSystemApps: () => Promise<DetectedSystemApp[]>;
   extractIcon: (filePath: string) => Promise<string | null>;
   resolveShortcut: (lnkPath: string) => Promise<{ name: string; target: string; args: string; icon: string } | null>;
+  searchGameArtwork: (title: string, installDir?: string) => Promise<{ coverUrl: string | null; iconUrl: string | null }>;
 }
 
 const electronAPI: ElectronAPI = {
@@ -37,6 +38,9 @@ const electronAPI: ElectronAPI = {
   indexSystemApps: () => ipcRenderer.invoke('index-system-apps'),
   extractIcon: (filePath: string) => ipcRenderer.invoke('extract-icon', filePath),
   resolveShortcut: (lnkPath: string) => ipcRenderer.invoke('resolve-shortcut', lnkPath),
+  searchGameArtwork: (title: string, installDir?: string) =>
+    ipcRenderer.invoke('search-game-artwork', title, installDir),
 };
+
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);
