@@ -23,6 +23,7 @@ import {
   resolveGameCover,
   getSecondaryCoverUrl,
 } from '../services/artwork';
+import { resolveEffectiveMode } from '../styles/themes';
 
 interface AppCardProps {
   item: GameItem;
@@ -43,7 +44,7 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
     setActiveMenuId,
   } = useGameStore();
 
-  const isDark = settings.themeMode === 'dark';
+  const isDark = resolveEffectiveMode(settings.themeMode) === 'dark';
   const [coverUrl, setCoverUrl] = useState<string | null>(
     item.coverUrl || getKnownCoverUrl(item.title) || null
   );

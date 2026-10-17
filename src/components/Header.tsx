@@ -39,7 +39,7 @@ export const Header: React.FC = () => {
   ];
 
   return (
-    <header className="h-16 px-6 border-b border-subtle bg-surface/70 backdrop-blur-md shrink-0 flex items-center justify-between gap-4 transition-colors duration-200">
+    <header className="relative z-40 h-16 px-6 border-b border-subtle bg-surface/90 backdrop-blur-md shrink-0 flex items-center justify-between gap-4 transition-colors duration-200">
       {/* App Branding & Search Input */}
       <div className="flex items-center gap-3 flex-1 max-w-lg">
         {/* GGL Branding Badge */}

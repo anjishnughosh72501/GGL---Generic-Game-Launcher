@@ -142,9 +142,9 @@ export const THEMES: Record<ThemePalette, ThemeDefinition> = {
     swatch: '#38BDF8',
     dark: {
       '--bg-base': '#0B0F14',
-      '--bg-surface': 'rgba(255, 255, 255, 0.04)',
-      '--bg-surface-hover': 'rgba(255, 255, 255, 0.08)',
-      '--border-subtle': 'rgba(255, 255, 255, 0.12)',
+      '--bg-surface': '#131923',
+      '--bg-surface-hover': '#1C2536',
+      '--border-subtle': 'rgba(255, 255, 255, 0.10)',
       '--text-primary': '#F0F9FF',
       '--text-muted': '#94A3B8',
       '--accent': '#38BDF8',
@@ -153,8 +153,8 @@ export const THEMES: Record<ThemePalette, ThemeDefinition> = {
     },
     light: {
       '--bg-base': '#F0F4F8',
-      '--bg-surface': 'rgba(255, 255, 255, 0.75)',
-      '--bg-surface-hover': 'rgba(255, 255, 255, 0.9)',
+      '--bg-surface': '#FFFFFF',
+      '--bg-surface-hover': '#E2E8F0',
       '--border-subtle': 'rgba(0, 0, 0, 0.08)',
       '--text-primary': '#0F172A',
       '--text-muted': '#64748B',

@@ -8,12 +8,29 @@ import { EditGameModal } from './components/EditGameModal';
 import { StatsModal } from './components/StatsModal';
 import { LaunchProcessHUD } from './components/LaunchProcessHUD';
 
+import { applyThemeTokens } from './styles/themes';
+
 export const App: React.FC = () => {
   const { initializeStore, activeMenuId, setActiveMenuId } = useGameStore();
 
   useEffect(() => {
     initializeStore();
   }, [initializeStore]);
+
+  // System OS Dark/Light scheme change listener
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleSchemeChange = () => {
+        const { settings } = useGameStore.getState();
+        if (settings.themeMode === 'system') {
+          applyThemeTokens(settings.themePalette, 'system');
+        }
+      };
+      mediaQuery.addEventListener('change', handleSchemeChange);
+      return () => mediaQuery.removeEventListener('change', handleSchemeChange);
+    }
+  }, []);
 
   // Global dismissal for active context menu on whitespace click or Escape key
   useEffect(() => {
@@ -39,7 +56,7 @@ export const App: React.FC = () => {
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         {/* Electron Window Drag Region with subtle title */}
         <div
           className="h-7 w-full shrink-0 select-none flex items-center justify-between px-4 bg-surface/40 border-b border-subtle"
@@ -56,7 +73,7 @@ export const App: React.FC = () => {
         <Header />
 
         {/* Main Content View (Grid / List) */}
-        <main className="flex-1 flex overflow-hidden bg-base">
+        <main className="flex-1 flex overflow-hidden bg-base relative z-0">
           <MainView />
         </main>
       </div>

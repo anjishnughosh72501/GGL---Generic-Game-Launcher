@@ -56,7 +56,7 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-64 h-full shrink-0 flex flex-col justify-between p-4 border-r border-subtle bg-surface/85 backdrop-blur-md text-muted transition-colors duration-200 select-none">
+    <aside className="relative z-30 w-64 h-full shrink-0 flex flex-col justify-between p-4 border-r border-subtle bg-surface/90 backdrop-blur-md text-muted transition-colors duration-200 select-none">
       {/* Top Header Region (No Name shown on sidebar, per specification) */}
       <div>
         <div className="flex items-center justify-between px-2 py-2 mb-5">
@@ -157,7 +157,7 @@ export const Sidebar: React.FC = () => {
 
         {/* Footer Row: Theme Switcher & Stats */}
         <div className="flex items-center justify-between px-1">
-          <ThemeSwitcher compact />
+          <ThemeSwitcher compact direction="up" />
 
           <button
             onClick={() => setStatsOpen(true)}
