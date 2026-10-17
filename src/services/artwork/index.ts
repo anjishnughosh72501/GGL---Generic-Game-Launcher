@@ -14,7 +14,8 @@ const iconCache = new Map<string, string>();
  */
 const KNOWN_GAME_COVERS: Record<string, string> = {
   assettocorsa: 'https://steamcdn-a.akamaihd.net/steam/apps/244210/library_600x900_2x.jpg',
-  fifa16: 'https://steamcdn-a.akamaihd.net/steam/apps/1506830/library_600x900_2x.jpg',
+  fifa16: 'https://www.fifplay.com/img/public/fifa-16-cover.jpg',
+  fifa22: 'https://steamcdn-a.akamaihd.net/steam/apps/1506830/library_600x900_2x.jpg',
   minecraft: 'https://cdn2.steamgriddb.com/grid/c089f21f15aa8ffc8a82cf91c4943f75.png',
   pokemontcgp: 'https://images.seeklogo.com/logo-png/54/1/pokemon-tcg-pocket-logo-png_seeklogo-543224.png',
   cyberpunk2077: 'https://steamcdn-a.akamaihd.net/steam/apps/1091500/library_600x900_2x.jpg',
