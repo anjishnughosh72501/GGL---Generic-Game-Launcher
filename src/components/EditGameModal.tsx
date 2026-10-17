@@ -149,8 +149,9 @@ export const EditGameModal: React.FC = () => {
   const quickTagSuggestions = ['PC Game', 'Action', 'Racing', 'RPG', 'Emulator', 'BlueStacks', 'Multiplayer'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm select-none animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
+
         className={`w-full max-w-xl rounded-3xl border shadow-2xl overflow-hidden flex flex-col transition-all ${
           isDark
             ? 'bg-zinc-900 border-zinc-800 text-zinc-100 shadow-black/80'

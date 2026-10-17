@@ -9,13 +9,32 @@ import { StatsModal } from './components/StatsModal';
 import { LaunchProcessHUD } from './components/LaunchProcessHUD';
 
 export const App: React.FC = () => {
-  const { initializeStore, settings } = useGameStore();
+  const { initializeStore, settings, activeMenuId, setActiveMenuId } = useGameStore();
 
   useEffect(() => {
     initializeStore();
   }, [initializeStore]);
 
+  // Global dismissal for active context menu on whitespace click or Escape key
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      if (activeMenuId) setActiveMenuId(null);
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && activeMenuId) {
+        setActiveMenuId(null);
+      }
+    };
+    window.addEventListener('click', handleGlobalClick);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('click', handleGlobalClick);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeMenuId, setActiveMenuId]);
+
   const isDark = settings.themeMode === 'dark';
+
 
   return (
     <div

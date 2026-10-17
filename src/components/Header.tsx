@@ -39,17 +39,20 @@ export const Header: React.FC = () => {
 
   return (
     <header
-      className={`h-16 px-6 border-b shrink-0 flex items-center justify-between gap-4 select-none transition-colors duration-200 ${
+      className={`h-16 px-6 border-b shrink-0 flex items-center justify-between gap-4 transition-colors duration-200 ${
         isDark
           ? 'bg-zinc-900/40 border-zinc-800/60 text-zinc-100'
           : 'bg-white/60 border-zinc-200/80 text-zinc-900'
       }`}
     >
-      {/* Search Input Bar */}
-      <div className="relative flex-1 max-w-md">
+      {/* Search Input Bar with Hovering Reactions & Full Text Selection */}
+      <div
+        className="relative flex-1 max-w-md group"
+        style={{ WebkitAppRegion: 'no-drag' } as any}
+      >
         <Search
-          className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none ${
-            isDark ? 'text-zinc-500' : 'text-zinc-400'
+          className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none transition-colors duration-200 ${
+            isDark ? 'text-zinc-500 group-hover:text-emerald-400' : 'text-zinc-400 group-hover:text-emerald-600'
           }`}
         />
         <input
@@ -57,21 +60,22 @@ export const Header: React.FC = () => {
           placeholder="Search games, apps, tags..."
           value={settings.searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className={`w-full pl-10 pr-9 py-2 text-xs rounded-xl border outline-none transition-all placeholder:text-zinc-400 ${
+          className={`w-full pl-10 pr-9 py-2 text-xs rounded-xl border outline-none transition-all duration-200 placeholder:text-zinc-400 select-text ${
             isDark
-              ? 'bg-zinc-900/80 border-zinc-800 focus:border-zinc-700 text-zinc-100 focus:bg-zinc-900'
-              : 'bg-zinc-100/90 border-zinc-200 focus:border-zinc-300 text-zinc-900 focus:bg-white'
+              ? 'bg-zinc-900/80 border-zinc-800 hover:border-zinc-700 focus:border-emerald-500/80 focus:ring-2 focus:ring-emerald-500/10 text-zinc-100 focus:bg-zinc-900 hover:shadow-xs'
+              : 'bg-zinc-100/90 border-zinc-200 hover:border-zinc-300 focus:border-emerald-500/80 focus:ring-2 focus:ring-emerald-500/10 text-zinc-900 focus:bg-white hover:shadow-xs'
           }`}
         />
         {settings.searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-400"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:scale-110 active:scale-90 transition-all cursor-pointer"
           >
             <X className="w-3 h-3" />
           </button>
         )}
       </div>
+
 
       {/* View Mode & Sort Controls */}
       <div className="flex items-center gap-2.5 shrink-0">

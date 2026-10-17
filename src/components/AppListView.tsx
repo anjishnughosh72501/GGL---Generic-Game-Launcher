@@ -56,10 +56,11 @@ export const AppListView: React.FC<AppListViewProps> = ({ items }) => {
             return (
               <tr
                 key={item.id}
-                className={`group transition-colors ${
-                  isDark ? 'hover:bg-zinc-900/70 text-zinc-200' : 'hover:bg-zinc-50 text-zinc-800'
+                className={`group transition-all duration-200 ${
+                  isDark ? 'hover:bg-zinc-900/90 text-zinc-200' : 'hover:bg-zinc-100/90 text-zinc-800'
                 }`}
               >
+
                 {/* Favorite Star */}
                 <td className="py-2.5 px-4 w-8">
                   <button

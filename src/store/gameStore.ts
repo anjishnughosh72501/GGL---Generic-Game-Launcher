@@ -61,6 +61,7 @@ interface HubStoreState {
   isStatsOpen: boolean;
   editingGame: GameItem | null;
   activeLaunch: LaunchProcessState | null;
+  activeMenuId: string | null;
 
   // Actions
   initializeStore: () => Promise<void>;
@@ -94,6 +95,7 @@ interface HubStoreState {
   setSpotlightOpen: (open: boolean) => void;
   setStatsOpen: (open: boolean) => void;
   setEditingGame: (game: GameItem | null) => void;
+  setActiveMenuId: (id: string | null) => void;
 }
 
 export const useGameStore = create<HubStoreState>((set, get) => ({
@@ -116,8 +118,14 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
   isStatsOpen: false,
   editingGame: null,
   activeLaunch: null,
+  activeMenuId: null,
+
+  setActiveMenuId: (id: string | null) => {
+    set({ activeMenuId: id });
+  },
 
   initializeStore: async () => {
+
     const stored = await loadFromStorage();
     let initialGames: GameItem[] = [];
     let initialTheme: ThemeMode = 'dark';

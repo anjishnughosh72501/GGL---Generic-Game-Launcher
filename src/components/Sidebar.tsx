@@ -179,17 +179,17 @@ export const Sidebar: React.FC = () => {
 
       {/* Bottom Area: Add Program & Theme Toggle */}
       <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60 space-y-2.5">
-        {/* Spotlight Add Button */}
+        {/* Spotlight Add Button with Hovering Reaction */}
         <button
           onClick={() => setSpotlightOpen(true)}
-          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer ${
+          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.98] hover:shadow-md ${
             isDark
-              ? 'bg-zinc-100 text-zinc-950 hover:bg-white active:scale-[0.98]'
-              : 'bg-zinc-900 text-zinc-50 hover:bg-zinc-800 active:scale-[0.98]'
+              ? 'bg-zinc-100 text-zinc-950 hover:bg-white hover:shadow-white/10'
+              : 'bg-zinc-900 text-zinc-50 hover:bg-zinc-800 hover:shadow-zinc-900/20'
           }`}
         >
           <div className="flex items-center gap-2">
-            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <Plus className="w-4 h-4 stroke-[2.5] transition-transform duration-200 group-hover:rotate-90" />
             <span>Add Program</span>
           </div>
           <kbd
@@ -211,7 +211,7 @@ export const Sidebar: React.FC = () => {
           >
             <button
               onClick={() => setThemeMode('light')}
-              className={`p-1.5 rounded-full transition-all cursor-pointer ${
+              className={`p-1.5 rounded-full transition-all duration-200 cursor-pointer hover:scale-115 active:scale-90 ${
                 !isDark ? 'bg-white text-zinc-900 shadow-xs' : 'text-zinc-500 hover:text-zinc-300'
               }`}
               title="Light Mode"
@@ -220,7 +220,7 @@ export const Sidebar: React.FC = () => {
             </button>
             <button
               onClick={() => setThemeMode('dark')}
-              className={`p-1.5 rounded-full transition-all cursor-pointer ${
+              className={`p-1.5 rounded-full transition-all duration-200 cursor-pointer hover:scale-115 active:scale-90 ${
                 isDark ? 'bg-zinc-800 text-zinc-100 shadow-xs' : 'text-zinc-500 hover:text-zinc-700'
               }`}
               title="Dark Mode"
@@ -231,7 +231,7 @@ export const Sidebar: React.FC = () => {
 
           <button
             onClick={() => setStatsOpen(true)}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 ${
               isDark ? 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900' : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
             }`}
           >
@@ -240,6 +240,7 @@ export const Sidebar: React.FC = () => {
           </button>
         </div>
       </div>
+
     </aside>
   );
 };
