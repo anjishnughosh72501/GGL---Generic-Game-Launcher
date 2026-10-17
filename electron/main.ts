@@ -27,7 +27,7 @@ function createWindow() {
     height: 820,
     minWidth: 920,
     minHeight: 600,
-    title: 'Fluent Hub',
+    title: 'GGL - Generic Game Launcher',
     backgroundColor: '#09090B',
     autoHideMenuBar: true,
     titleBarStyle: 'hidden',

@@ -9,7 +9,7 @@ import { StatsModal } from './components/StatsModal';
 import { LaunchProcessHUD } from './components/LaunchProcessHUD';
 
 export const App: React.FC = () => {
-  const { initializeStore, settings, activeMenuId, setActiveMenuId } = useGameStore();
+  const { initializeStore, activeMenuId, setActiveMenuId } = useGameStore();
 
   useEffect(() => {
     initializeStore();
@@ -33,31 +33,30 @@ export const App: React.FC = () => {
     };
   }, [activeMenuId, setActiveMenuId]);
 
-  const isDark = settings.themeMode === 'dark';
-
-
   return (
-    <div
-      className={`flex h-screen w-screen overflow-hidden transition-colors duration-200 ${
-        isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'
-      }`}
-    >
-      {/* Sidebar (Notion / Spotify style) */}
+    <div className="flex h-screen w-screen overflow-hidden transition-colors duration-200 bg-base text-primary">
+      {/* Sidebar (Clean layout, no name on sidebar) */}
       <Sidebar />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Electron Window Drag Region */}
+        {/* Electron Window Drag Region with subtle title */}
         <div
-          className="h-8 w-full shrink-0 select-none flex items-center justify-end px-4"
+          className="h-7 w-full shrink-0 select-none flex items-center justify-between px-4 bg-surface/40 border-b border-subtle"
           style={{ WebkitAppRegion: 'drag' } as any}
-        />
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-semibold tracking-wider text-muted">
+              GGL &bull; Generic Game Launcher
+            </span>
+          </div>
+        </div>
 
         {/* Top Header */}
         <Header />
 
         {/* Main Content View (Grid / List) */}
-        <main className="flex-1 flex overflow-hidden">
+        <main className="flex-1 flex overflow-hidden bg-base">
           <MainView />
         </main>
       </div>

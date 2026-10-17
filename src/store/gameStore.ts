@@ -3,6 +3,7 @@ import {
   GameItem,
   HubSettings,
   DetectedSystemApp,
+  ThemePalette,
   ThemeMode,
   ViewMode,
   PlatformType,
@@ -10,19 +11,26 @@ import {
 } from '../types/game';
 import { scanAllPlatforms, scanSystemApplications, UnifiedScanSummary } from '../services/scanners';
 import { resolveAppIcon, resolveGameCover } from '../services/artwork';
+import { applyThemeTokens } from '../styles/themes';
 import { launchGame } from '../services/launcher';
 
 interface StoredData {
   games: GameItem[];
-  themeMode: ThemeMode;
+  themePalette?: ThemePalette;
+  themeMode?: ThemeMode;
   viewMode: ViewMode;
 }
 
 const STORAGE_KEY = 'fluent_hub_state';
 
-async function persistToStorage(games: GameItem[], themeMode: ThemeMode, viewMode: ViewMode) {
+async function persistToStorage(
+  games: GameItem[],
+  themePalette: ThemePalette,
+  themeMode: ThemeMode,
+  viewMode: ViewMode
+) {
   try {
-    const data: StoredData = { games, themeMode, viewMode };
+    const data: StoredData = { games, themePalette, themeMode, viewMode };
     const electronAPI = (window as any).electronAPI;
     if (electronAPI?.saveUserData) {
       await electronAPI.saveUserData(data);
@@ -65,6 +73,7 @@ interface HubStoreState {
 
   // Actions
   initializeStore: () => Promise<void>;
+  setThemePalette: (themePalette: ThemePalette) => void;
   setThemeMode: (themeMode: ThemeMode) => void;
   setViewMode: (viewMode: ViewMode) => void;
   setActiveFilter: (filter: HubSettings['activeFilter']) => void;
@@ -101,6 +110,7 @@ interface HubStoreState {
 export const useGameStore = create<HubStoreState>((set, get) => ({
   games: [],
   settings: {
+    themePalette: 'zinc',
     themeMode: 'dark',
     viewMode: 'grid-poster',
     activeFilter: 'all',
@@ -125,28 +135,26 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
   },
 
   initializeStore: async () => {
-
     const stored = await loadFromStorage();
     let initialGames: GameItem[] = [];
+    let initialPalette: ThemePalette = 'zinc';
     let initialTheme: ThemeMode = 'dark';
     let initialView: ViewMode = 'grid-poster';
 
     if (stored) {
       if (stored.games && stored.games.length > 0) initialGames = stored.games;
+      if (stored.themePalette) initialPalette = stored.themePalette;
       if (stored.themeMode) initialTheme = stored.themeMode;
       if (stored.viewMode) initialView = stored.viewMode;
     }
 
-    if (initialTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    applyThemeTokens(initialPalette, initialTheme);
 
     set((state) => ({
       games: initialGames,
       settings: {
         ...state.settings,
+        themePalette: initialPalette,
         themeMode: initialTheme,
         viewMode: initialView,
       },
@@ -198,15 +206,30 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
     }, 1200);
   },
 
+  setThemePalette: (themePalette) => {
+    set((state) => {
+      const newSettings = { ...state.settings, themePalette };
+      applyThemeTokens(themePalette, state.settings.themeMode);
+      persistToStorage(
+        state.games,
+        themePalette,
+        state.settings.themeMode,
+        state.settings.viewMode
+      );
+      return { settings: newSettings };
+    });
+  },
+
   setThemeMode: (themeMode) => {
-    if (themeMode === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
     set((state) => {
       const newSettings = { ...state.settings, themeMode };
-      persistToStorage(state.games, themeMode, state.settings.viewMode);
+      applyThemeTokens(state.settings.themePalette, themeMode);
+      persistToStorage(
+        state.games,
+        state.settings.themePalette,
+        themeMode,
+        state.settings.viewMode
+      );
       return { settings: newSettings };
     });
   },
@@ -214,7 +237,12 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
   setViewMode: (viewMode) => {
     set((state) => {
       const newSettings = { ...state.settings, viewMode };
-      persistToStorage(state.games, state.settings.themeMode, viewMode);
+      persistToStorage(
+        state.games,
+        state.settings.themePalette,
+        state.settings.themeMode,
+        viewMode
+      );
       return { settings: newSettings };
     });
   },
@@ -282,7 +310,12 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
         isScanning: false,
       });
 
-      await persistToStorage(mergedItems, get().settings.themeMode, get().settings.viewMode);
+      await persistToStorage(
+        mergedItems,
+        get().settings.themePalette,
+        get().settings.themeMode,
+        get().settings.viewMode
+      );
     } catch (err) {
       console.error('Scan error:', err);
       set({ isScanning: false });
@@ -356,7 +389,12 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
 
     const updated = [newItem, ...get().games];
     set({ games: updated, isSpotlightOpen: false });
-    await persistToStorage(updated, get().settings.themeMode, get().settings.viewMode);
+    await persistToStorage(
+      updated,
+      get().settings.themePalette,
+      get().settings.themeMode,
+      get().settings.viewMode
+    );
   },
 
   addCustomProgram: async (newApp) => {
@@ -398,19 +436,34 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
 
     const updated = [newItem, ...get().games];
     set({ games: updated, isSpotlightOpen: false });
-    await persistToStorage(updated, get().settings.themeMode, get().settings.viewMode);
+    await persistToStorage(
+      updated,
+      get().settings.themePalette,
+      get().settings.themeMode,
+      get().settings.viewMode
+    );
   },
 
   updateGame: async (id, updates) => {
     const updated = get().games.map((g) => (g.id === id ? { ...g, ...updates } : g));
     set({ games: updated, editingGame: null });
-    await persistToStorage(updated, get().settings.themeMode, get().settings.viewMode);
+    await persistToStorage(
+      updated,
+      get().settings.themePalette,
+      get().settings.themeMode,
+      get().settings.viewMode
+    );
   },
 
   deleteGame: async (id) => {
     const updated = get().games.filter((g) => g.id !== id);
     set({ games: updated });
-    await persistToStorage(updated, get().settings.themeMode, get().settings.viewMode);
+    await persistToStorage(
+      updated,
+      get().settings.themePalette,
+      get().settings.themeMode,
+      get().settings.viewMode
+    );
   },
 
   toggleFavorite: async (id) => {
@@ -418,7 +471,12 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
       g.id === id ? { ...g, favorite: !g.favorite } : g
     );
     set({ games: updated });
-    await persistToStorage(updated, get().settings.themeMode, get().settings.viewMode);
+    await persistToStorage(
+      updated,
+      get().settings.themePalette,
+      get().settings.themeMode,
+      get().settings.viewMode
+    );
   },
 
   toggleHide: async (id) => {
@@ -426,7 +484,12 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
       g.id === id ? { ...g, hidden: !g.hidden } : g
     );
     set({ games: updated });
-    await persistToStorage(updated, get().settings.themeMode, get().settings.viewMode);
+    await persistToStorage(
+      updated,
+      get().settings.themePalette,
+      get().settings.themeMode,
+      get().settings.viewMode
+    );
   },
 
   recordLaunch: async (id) => {
@@ -440,7 +503,12 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
         : g
     );
     set({ games: updated });
-    await persistToStorage(updated, get().settings.themeMode, get().settings.viewMode);
+    await persistToStorage(
+      updated,
+      get().settings.themePalette,
+      get().settings.themeMode,
+      get().settings.viewMode
+    );
   },
 
   executeLaunch: async (item: GameItem) => {

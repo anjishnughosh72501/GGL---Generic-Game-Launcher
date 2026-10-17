@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Compass, Plus, Ghost } from 'lucide-react';
+import { Plus, Ghost } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { AppCard } from './AppCard';
 import { AppListView } from './AppListView';
@@ -13,8 +13,6 @@ export const MainView: React.FC = () => {
     setSelectedTag,
     setSpotlightOpen,
   } = useGameStore();
-
-  const isDark = settings.themeMode === 'dark';
 
   // Filter & Sort
   const filteredItems = useMemo(() => {
@@ -74,18 +72,14 @@ export const MainView: React.FC = () => {
   }, [games, settings]);
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 transition-colors duration-200">
+    <div className="flex-1 overflow-y-auto p-6 transition-colors duration-200 bg-base">
       {filteredItems.length > 0 ? (
         settings.viewMode === 'list' ? (
           <AppListView items={filteredItems} />
         ) : (
           <motion.div
             layout
-            className={`grid gap-5 ${
-              settings.viewMode === 'grid-square'
-                ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
-                : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
-            }`}
+            className="grid gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
           >
             <AnimatePresence>
               {filteredItems.map((item) => (
@@ -97,17 +91,13 @@ export const MainView: React.FC = () => {
       ) : (
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border ${
-              isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-500' : 'bg-zinc-100 border-zinc-200 text-zinc-400'
-            }`}
-          >
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border border-subtle bg-surface text-muted shadow-xs">
             <Ghost className="w-6 h-6" />
           </div>
-          <h3 className="text-sm font-semibold mb-1 text-zinc-900 dark:text-zinc-100">
+          <h3 className="text-sm font-semibold mb-1 text-primary">
             No items found
           </h3>
-          <p className="text-xs text-zinc-500 max-w-sm mb-5">
+          <p className="text-xs text-muted max-w-sm mb-5">
             {settings.searchQuery || settings.selectedTag || settings.activeFilter !== 'all'
               ? 'No games or applications match your current search or filter.'
               : 'Your library is empty. Add desktop programs or scan your game libraries.'}
@@ -120,9 +110,7 @@ export const MainView: React.FC = () => {
                   setSearchQuery('');
                   setSelectedTag(null);
                 }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-medium border cursor-pointer ${
-                  isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50'
-                }`}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-medium border border-subtle bg-surface text-muted hover:text-primary hover:bg-surface-hover cursor-pointer transition-colors shadow-xs"
               >
                 Clear Search
               </button>
@@ -130,7 +118,7 @@ export const MainView: React.FC = () => {
 
             <button
               onClick={() => setSpotlightOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500 text-black hover:bg-emerald-400 transition-colors shadow-xs cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-accent text-accent-fg hover:bg-accent-hover transition-colors shadow-xs cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Add Program</span>

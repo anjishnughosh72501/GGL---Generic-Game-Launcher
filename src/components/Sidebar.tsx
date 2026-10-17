@@ -7,14 +7,13 @@ import {
   Clock,
   Plus,
   RefreshCw,
-  Sun,
-  Moon,
   BarChart2,
   HardDrive,
   Layers,
 } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { HubSettings, PlatformType } from '../types/game';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 export const Sidebar: React.FC = () => {
   const {
@@ -22,14 +21,11 @@ export const Sidebar: React.FC = () => {
     settings,
     setActiveFilter,
     setActivePlatform,
-    setThemeMode,
     setSpotlightOpen,
     setStatsOpen,
     scanLibrary,
     isScanning,
   } = useGameStore();
-
-  const isDark = settings.themeMode === 'dark';
 
   const totalCount = games.filter((g) => !g.hidden || settings.showHidden).length;
   const gameCount = games.filter((g) => g.category === 'game' && (!g.hidden || settings.showHidden)).length;
@@ -60,49 +56,27 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside
-      className={`w-64 h-full shrink-0 flex flex-col justify-between p-4 border-r transition-colors duration-200 select-none ${
-        isDark
-          ? 'bg-zinc-950/80 border-zinc-800/60 text-zinc-300'
-          : 'bg-zinc-50/90 border-zinc-200/80 text-zinc-700'
-      }`}
-    >
-      {/* Top Branding */}
+    <aside className="w-64 h-full shrink-0 flex flex-col justify-between p-4 border-r border-subtle bg-surface/85 backdrop-blur-md text-muted transition-colors duration-200 select-none">
+      {/* Top Header Region (No Name shown on sidebar, per specification) */}
       <div>
         <div className="flex items-center justify-between px-2 py-2 mb-5">
-          <div className="flex items-center gap-2.5">
-            <div
-              className={`w-8 h-8 rounded-xl flex items-center justify-center shadow-sm ${
-                isDark ? 'bg-zinc-800 text-zinc-100 border border-zinc-700/60' : 'bg-white text-zinc-900 border border-zinc-200'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-                Fluent Hub
-              </div>
-              <div className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium">
-                PC Library & Launcher
-              </div>
-            </div>
+          <div className="w-9 h-9 rounded-2xl flex items-center justify-center bg-base border border-subtle text-accent shadow-xs">
+            <Layers className="w-4 h-4" />
           </div>
 
           <button
             onClick={() => scanLibrary()}
             disabled={isScanning}
-            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-              isDark ? 'hover:bg-zinc-800/70 text-zinc-400' : 'hover:bg-zinc-200/70 text-zinc-500'
-            }`}
+            className="p-2 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-muted hover:text-primary transition-all duration-200 cursor-pointer shadow-xs"
             title="Scan Libraries & Platforms"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin text-emerald-500' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin text-accent' : ''}`} />
           </button>
         </div>
 
         {/* Quick Nav Items */}
         <div className="space-y-1">
-          <div className="text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider px-2 py-1">
+          <div className="text-[10px] font-semibold text-muted uppercase tracking-wider px-2 py-1">
             Library
           </div>
           {navItems.map((item) => {
@@ -111,18 +85,14 @@ export const Sidebar: React.FC = () => {
               <button
                 key={item.id}
                 onClick={() => setActiveFilter(item.id)}
-                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? isDark
-                      ? 'bg-zinc-800 text-zinc-100 shadow-sm'
-                      : 'bg-zinc-200/80 text-zinc-900 shadow-sm'
-                    : isDark
-                    ? 'hover:bg-zinc-900 text-zinc-400 hover:text-zinc-200'
-                    : 'hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900'
+                    ? 'bg-surface-hover text-primary font-semibold shadow-xs border border-subtle'
+                    : 'text-muted hover:bg-surface-hover/60 hover:text-primary border border-transparent'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className={isActive ? 'text-zinc-900 dark:text-zinc-100' : ''}>
+                  <span className={isActive ? 'text-accent' : 'text-muted'}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -130,12 +100,8 @@ export const Sidebar: React.FC = () => {
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md ${
                     isActive
-                      ? isDark
-                        ? 'bg-zinc-700/60 text-zinc-300'
-                        : 'bg-zinc-300/80 text-zinc-800'
-                      : isDark
-                      ? 'text-zinc-500'
-                      : 'text-zinc-400'
+                      ? 'bg-accent/15 text-accent font-semibold'
+                      : 'text-muted'
                   }`}
                 >
                   {item.count}
@@ -146,8 +112,8 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* Platform Filter Section */}
-        <div className="mt-6 pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60">
-          <div className="text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider px-2 py-1 flex items-center gap-1.5">
+        <div className="mt-6 pt-4 border-t border-subtle">
+          <div className="text-[10px] font-semibold text-muted uppercase tracking-wider px-2 py-1 flex items-center gap-1.5">
             <HardDrive className="w-3 h-3" />
             Platform
           </div>
@@ -158,18 +124,14 @@ export const Sidebar: React.FC = () => {
                 <button
                   key={p.id}
                   onClick={() => setActivePlatform(p.id)}
-                  className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs transition-colors cursor-pointer ${
                     isActive
-                      ? isDark
-                        ? 'bg-zinc-800/80 text-zinc-100 font-semibold'
-                        : 'bg-zinc-200 text-zinc-900 font-semibold'
-                      : isDark
-                      ? 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
-                      : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+                      ? 'bg-surface-hover text-primary font-semibold border border-subtle'
+                      : 'text-muted hover:text-primary hover:bg-surface-hover/60 border border-transparent'
                   }`}
                 >
                   <span>{p.label}</span>
-                  {isActive && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+                  {isActive && <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-xs" />}
                 </button>
               );
             })}
@@ -177,70 +139,35 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Area: Add Program & Theme Toggle */}
-      <div className="pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60 space-y-2.5">
-        {/* Spotlight Add Button with Hovering Reaction */}
+      {/* Bottom Area: Add Program & Quick Settings */}
+      <div className="pt-4 border-t border-subtle space-y-2.5">
+        {/* Spotlight Add Button with Token Styling */}
         <button
           onClick={() => setSpotlightOpen(true)}
-          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow-sm transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.98] hover:shadow-md ${
-            isDark
-              ? 'bg-zinc-100 text-zinc-950 hover:bg-white hover:shadow-white/10'
-              : 'bg-zinc-900 text-zinc-50 hover:bg-zinc-800 hover:shadow-zinc-900/20'
-          }`}
+          className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow-md bg-accent text-accent-fg hover:bg-accent-hover transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
         >
           <div className="flex items-center gap-2">
-            <Plus className="w-4 h-4 stroke-[2.5] transition-transform duration-200 group-hover:rotate-90" />
+            <Plus className="w-4 h-4 stroke-[2.5]" />
             <span>Add Program</span>
           </div>
-          <kbd
-            className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
-              isDark ? 'bg-zinc-200 text-zinc-800' : 'bg-zinc-800 text-zinc-200'
-            }`}
-          >
+          <kbd className="text-[10px] px-1.5 py-0.5 rounded font-mono bg-black/20 text-accent-fg border border-white/20">
             Ctrl K
           </kbd>
         </button>
 
         {/* Footer Row: Theme Switcher & Stats */}
         <div className="flex items-center justify-between px-1">
-          {/* Light / Dark Mode Pill Switch */}
-          <div
-            className={`flex items-center p-0.5 rounded-full border ${
-              isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-200/70 border-zinc-300/80'
-            }`}
-          >
-            <button
-              onClick={() => setThemeMode('light')}
-              className={`p-1.5 rounded-full transition-all duration-200 cursor-pointer hover:scale-115 active:scale-90 ${
-                !isDark ? 'bg-white text-zinc-900 shadow-xs' : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-              title="Light Mode"
-            >
-              <Sun className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setThemeMode('dark')}
-              className={`p-1.5 rounded-full transition-all duration-200 cursor-pointer hover:scale-115 active:scale-90 ${
-                isDark ? 'bg-zinc-800 text-zinc-100 shadow-xs' : 'text-zinc-500 hover:text-zinc-700'
-              }`}
-              title="Dark Mode"
-            >
-              <Moon className="w-3.5 h-3.5" />
-            </button>
-          </div>
+          <ThemeSwitcher compact />
 
           <button
             onClick={() => setStatsOpen(true)}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 ${
-              isDark ? 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900' : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
-            }`}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted hover:text-primary hover:bg-surface-hover border border-transparent hover:border-subtle transition-all duration-200 cursor-pointer shadow-xs"
           >
             <BarChart2 className="w-3.5 h-3.5" />
-            <span>Stats</span>
+            <span>Telemetry</span>
           </button>
         </div>
       </div>
-
     </aside>
   );
 };

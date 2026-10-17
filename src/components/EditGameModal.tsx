@@ -18,9 +18,8 @@ import { showItemInFolder } from '../services/launcher';
 type EditTab = 'general' | 'execution' | 'artwork';
 
 export const EditGameModal: React.FC = () => {
-  const { editingGame, setEditingGame, updateGame, settings } = useGameStore();
+  const { editingGame, setEditingGame, updateGame } = useGameStore();
 
-  const isDark = settings.themeMode === 'dark';
   const [activeTab, setActiveTab] = useState<EditTab>('general');
 
   // Form States
@@ -156,46 +155,37 @@ export const EditGameModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div
-
-        className={`w-full max-w-xl rounded-3xl border shadow-2xl overflow-hidden flex flex-col transition-all ${
-          isDark
-            ? 'bg-zinc-900 border-zinc-800 text-zinc-100 shadow-black/80'
-            : 'bg-white border-zinc-200 text-zinc-900 shadow-zinc-400/30'
-        }`}
-      >
+      <div className="w-full max-w-xl max-h-[85vh] rounded-3xl border border-subtle bg-surface text-primary shadow-2xl overflow-hidden flex flex-col transition-all">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800/80">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-subtle shrink-0">
           <div className="flex items-center gap-3">
             {iconUrl ? (
               <img src={iconUrl} alt="" className="w-6 h-6 rounded-md object-contain shrink-0" />
             ) : (
-              <Layers className="w-5 h-5 text-emerald-500" />
+              <Layers className="w-5 h-5 text-accent" />
             )}
             <div>
               <h2 className="text-sm font-semibold leading-tight line-clamp-1">{title || 'Edit Program Details'}</h2>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Configure metadata, paths, and branding</p>
+              <p className="text-[11px] text-muted">Configure metadata, paths, and branding in GGL</p>
             </div>
           </div>
           <button
             onClick={() => setEditingGame(null)}
-            className="p-1.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl hover:bg-surface-hover text-muted hover:text-primary transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Tab Navigation Bar */}
-        <div className="flex items-center gap-1.5 px-6 pt-3 pb-2 border-b border-zinc-100 dark:border-zinc-800/60 bg-zinc-50/50 dark:bg-zinc-950/40">
+        <div className="flex items-center gap-1.5 px-6 pt-3 pb-2 border-b border-subtle bg-base/40 shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab('general')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'general'
-                ? isDark
-                  ? 'bg-zinc-800 text-zinc-100 shadow-xs'
-                  : 'bg-white text-zinc-900 shadow-xs border border-zinc-200/80'
-                : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'
+                ? 'bg-surface text-primary font-semibold shadow-xs border border-subtle'
+                : 'text-muted hover:text-primary'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -207,10 +197,8 @@ export const EditGameModal: React.FC = () => {
             onClick={() => setActiveTab('execution')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'execution'
-                ? isDark
-                  ? 'bg-zinc-800 text-zinc-100 shadow-xs'
-                  : 'bg-white text-zinc-900 shadow-xs border border-zinc-200/80'
-                : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'
+                ? 'bg-surface text-primary font-semibold shadow-xs border border-subtle'
+                : 'text-muted hover:text-primary'
             }`}
           >
             <Terminal className="w-3.5 h-3.5" />
@@ -222,10 +210,8 @@ export const EditGameModal: React.FC = () => {
             onClick={() => setActiveTab('artwork')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'artwork'
-                ? isDark
-                  ? 'bg-zinc-800 text-zinc-100 shadow-xs'
-                  : 'bg-white text-zinc-900 shadow-xs border border-zinc-200/80'
-                : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'
+                ? 'bg-surface text-primary font-semibold shadow-xs border border-subtle'
+                : 'text-muted hover:text-primary'
             }`}
           >
             <Palette className="w-3.5 h-3.5" />
@@ -234,14 +220,14 @@ export const EditGameModal: React.FC = () => {
         </div>
 
         {/* Tab Content Form */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto max-h-[65vh] p-6 space-y-5">
+        <form id="edit-game-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
           {/* TAB 1: GENERAL */}
           {activeTab === 'general' && (
             <div className="space-y-4">
-              {/* Title & Category Row (Strictly Aligned 40px Height) */}
+              {/* Title & Category Row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
                 <div>
-                  <label className="block text-xs font-medium mb-1.5 text-zinc-700 dark:text-zinc-300">
+                  <label className="block text-xs font-medium mb-1.5 text-primary">
                     Display Title
                   </label>
                   <input
@@ -249,33 +235,23 @@ export const EditGameModal: React.FC = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Assetto Corsa"
-                    className={`w-full h-10 px-3.5 text-sm rounded-xl border outline-none font-medium transition-colors ${
-                      isDark
-                        ? 'bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100'
-                        : 'bg-zinc-50 border-zinc-200 focus:border-emerald-500 text-zinc-900'
-                    }`}
+                    className="w-full h-10 px-3.5 text-sm rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none font-medium transition-colors focus:border-accent select-text"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium mb-1.5 text-zinc-700 dark:text-zinc-300">
+                  <label className="block text-xs font-medium mb-1.5 text-primary">
                     Category
                   </label>
-                  <div
-                    className={`flex items-center h-10 p-1 rounded-xl border ${
-                      isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100/80 border-zinc-200'
-                    }`}
-                  >
+                  <div className="flex items-center h-10 p-1 rounded-xl border border-subtle bg-base">
                     <button
                       type="button"
                       onClick={() => setCategory('game')}
                       className={`flex-1 h-full rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         category === 'game'
-                          ? isDark
-                            ? 'bg-zinc-800 text-emerald-400 shadow-xs'
-                            : 'bg-white text-emerald-600 shadow-xs'
-                          : 'text-zinc-400 hover:text-zinc-200'
+                          ? 'bg-surface text-accent shadow-xs border border-subtle'
+                          : 'text-muted hover:text-primary'
                       }`}
                     >
                       Game
@@ -285,10 +261,8 @@ export const EditGameModal: React.FC = () => {
                       onClick={() => setCategory('app')}
                       className={`flex-1 h-full rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         category === 'app'
-                          ? isDark
-                            ? 'bg-zinc-800 text-sky-400 shadow-xs'
-                            : 'bg-white text-sky-600 shadow-xs'
-                          : 'text-zinc-400 hover:text-zinc-200'
+                          ? 'bg-surface text-accent shadow-xs border border-subtle'
+                          : 'text-muted hover:text-primary'
                       }`}
                     >
                       Application
@@ -299,16 +273,12 @@ export const EditGameModal: React.FC = () => {
 
               {/* Platform Info Row */}
               <div>
-                <label className="block text-xs font-medium mb-1.5 text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-medium mb-1.5 text-primary">
                   Platform Origin
                 </label>
-                <div
-                  className={`flex items-center justify-between h-10 px-3.5 rounded-xl border text-xs font-mono uppercase ${
-                    isDark ? 'bg-zinc-950/60 border-zinc-800 text-zinc-400' : 'bg-zinc-100/60 border-zinc-200 text-zinc-600'
-                  }`}
-                >
-                  <span className="font-semibold">{editingGame.platform}</span>
-                  <span className="text-[10px] normal-case text-zinc-500">
+                <div className="flex items-center justify-between h-10 px-3.5 rounded-xl border border-subtle bg-base/60 text-xs font-mono uppercase text-muted">
+                  <span className="font-semibold text-primary">{editingGame.platform}</span>
+                  <span className="text-[10px] normal-case text-muted">
                     {editingGame.isCustom ? 'Custom Entry' : 'Auto-Scanned Library'}
                   </span>
                 </div>
@@ -316,7 +286,7 @@ export const EditGameModal: React.FC = () => {
 
               {/* Tags Section */}
               <div>
-                <label className="block text-xs font-medium mb-1.5 text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-medium mb-1.5 text-primary">
                   Tags & Metadata
                 </label>
                 <div className="flex gap-2 mb-2.5">
@@ -331,18 +301,12 @@ export const EditGameModal: React.FC = () => {
                         handleAddTag();
                       }
                     }}
-                    className={`flex-1 h-10 px-3.5 text-xs rounded-xl border outline-none ${
-                      isDark
-                        ? 'bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100'
-                        : 'bg-zinc-50 border-zinc-200 focus:border-emerald-500 text-zinc-900'
-                    }`}
+                    className="flex-1 h-10 px-3.5 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none focus:border-accent select-text"
                   />
                   <button
                     type="button"
                     onClick={() => handleAddTag()}
-                    className={`h-10 px-4 rounded-xl border text-xs font-semibold cursor-pointer transition-colors ${
-                      isDark ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700' : 'bg-zinc-100 border-zinc-300 hover:bg-zinc-200'
-                    }`}
+                    className="h-10 px-4 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold cursor-pointer transition-colors shadow-xs"
                   >
                     Add
                   </button>
@@ -350,13 +314,13 @@ export const EditGameModal: React.FC = () => {
 
                 {/* Quick suggestions */}
                 <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
-                  <span className="text-[10px] text-zinc-400">Suggestions:</span>
+                  <span className="text-[10px] text-muted">Suggestions:</span>
                   {quickTagSuggestions.map((st) => (
                     <button
                       key={st}
                       type="button"
                       onClick={() => handleAddTag(st)}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800/60 text-zinc-500 dark:text-zinc-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors cursor-pointer"
+                      className="text-[10px] px-2 py-0.5 rounded-md bg-base text-muted hover:text-accent border border-subtle transition-colors cursor-pointer"
                     >
                       +{st}
                     </button>
@@ -364,25 +328,25 @@ export const EditGameModal: React.FC = () => {
                 </div>
 
                 {/* Active Tag Chips */}
-                <div className="flex flex-wrap gap-1.5 min-h-[30px] p-2 rounded-xl bg-zinc-950/30 dark:bg-zinc-950/60 border border-zinc-200/60 dark:border-zinc-800/60">
+                <div className="flex flex-wrap gap-1.5 min-h-[30px] p-2 rounded-xl bg-base/50 border border-subtle">
                   {tags.length > 0 ? (
                     tags.map((t) => (
                       <span
                         key={t}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-medium"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-surface border border-subtle text-primary font-medium"
                       >
                         #{t}
                         <button
                           type="button"
                           onClick={() => handleRemoveTag(t)}
-                          className="hover:text-red-500 ml-1 text-zinc-400 cursor-pointer"
+                          className="hover:text-red-500 ml-1 text-muted cursor-pointer"
                         >
                           ×
                         </button>
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs text-zinc-500 italic p-1">No tags assigned</span>
+                    <span className="text-xs text-muted italic p-1">No tags assigned</span>
                   )}
                 </div>
               </div>
@@ -394,14 +358,14 @@ export const EditGameModal: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                  <label className="text-xs font-medium text-primary">
                     Primary Executable (.exe / .bat)
                   </label>
                   {executablePath && (
                     <button
                       type="button"
                       onClick={() => showItemInFolder(executablePath)}
-                      className="text-[11px] text-sky-500 hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-[11px] text-accent hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <ExternalLink className="w-3 h-3" />
                       <span>Locate in Explorer</span>
@@ -414,18 +378,12 @@ export const EditGameModal: React.FC = () => {
                     value={executablePath}
                     onChange={(e) => setExecutablePath(e.target.value)}
                     placeholder="C:\Games\GameFolder\Game.exe"
-                    className={`flex-1 h-10 px-3.5 text-xs rounded-xl border outline-none font-mono ${
-                      isDark
-                        ? 'bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100'
-                        : 'bg-zinc-50 border-zinc-200 focus:border-emerald-500 text-zinc-900'
-                    }`}
+                    className="flex-1 h-10 px-3.5 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none font-mono focus:border-accent select-text"
                   />
                   <button
                     type="button"
                     onClick={handleSelectExe}
-                    className={`h-10 flex items-center gap-1.5 px-3.5 rounded-xl border text-xs font-semibold shrink-0 cursor-pointer transition-colors ${
-                      isDark ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700' : 'bg-zinc-100 border-zinc-300 hover:bg-zinc-200'
-                    }`}
+                    className="h-10 flex items-center gap-1.5 px-3.5 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-xs"
                   >
                     <FolderOpen className="w-3.5 h-3.5" />
                     <span>Browse</span>
@@ -434,25 +392,8 @@ export const EditGameModal: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1.5 text-zinc-700 dark:text-zinc-300">
-                  Launch Arguments & Flags
-                </label>
-                <input
-                  type="text"
-                  value={launchArgs}
-                  onChange={(e) => setLaunchArgs(e.target.value)}
-                  placeholder="e.g. -fullscreen -novid or --instance Pie64 --cmd launchApp --package ..."
-                  className={`w-full h-10 px-3.5 text-xs rounded-xl border outline-none font-mono ${
-                    isDark
-                      ? 'bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100'
-                      : 'bg-zinc-50 border-zinc-200 focus:border-emerald-500 text-zinc-900'
-                  }`}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium mb-1.5 text-zinc-700 dark:text-zinc-300">
-                  Installation / Working Directory
+                <label className="block text-xs font-medium mb-1.5 text-primary">
+                  Working Directory
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -460,23 +401,30 @@ export const EditGameModal: React.FC = () => {
                     value={installDir}
                     onChange={(e) => setInstallDir(e.target.value)}
                     placeholder="C:\Games\GameFolder"
-                    className={`flex-1 h-10 px-3.5 text-xs rounded-xl border outline-none font-mono ${
-                      isDark
-                        ? 'bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100'
-                        : 'bg-zinc-50 border-zinc-200 focus:border-emerald-500 text-zinc-900'
-                    }`}
+                    className="flex-1 h-10 px-3.5 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none font-mono focus:border-accent select-text"
                   />
                   <button
                     type="button"
                     onClick={handleSelectFolder}
-                    className={`h-10 flex items-center gap-1.5 px-3.5 rounded-xl border text-xs font-semibold shrink-0 cursor-pointer transition-colors ${
-                      isDark ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700' : 'bg-zinc-100 border-zinc-300 hover:bg-zinc-200'
-                    }`}
+                    className="h-10 flex items-center gap-1.5 px-3.5 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-xs"
                   >
                     <FolderOpen className="w-3.5 h-3.5" />
-                    <span>Browse Folder</span>
+                    <span>Browse</span>
                   </button>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium mb-1.5 text-primary">
+                  Launch Arguments & Flags
+                </label>
+                <input
+                  type="text"
+                  value={launchArgs}
+                  onChange={(e) => setLaunchArgs(e.target.value)}
+                  placeholder="-novid -fullscreen -dx11"
+                  className="w-full h-10 px-3.5 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none font-mono focus:border-accent select-text"
+                />
               </div>
             </div>
           )}
@@ -485,16 +433,16 @@ export const EditGameModal: React.FC = () => {
           {activeTab === 'artwork' && (
             <div className="space-y-5">
               {/* Cover Art Section */}
-              <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-950/40">
+              <div className="p-4 rounded-2xl border border-subtle bg-base/40">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  <span className="text-xs font-semibold text-primary">
                     Cover / Poster Artwork (2:3 Aspect)
                   </span>
                   <button
                     type="button"
                     onClick={handleAutoFindCover}
                     disabled={isSearchingCover}
-                    className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-500 hover:text-emerald-400 cursor-pointer transition-colors"
+                    className="flex items-center gap-1.5 text-[11px] font-medium text-accent hover:opacity-80 cursor-pointer transition-colors"
                   >
                     <Sparkles className={`w-3.5 h-3.5 ${isSearchingCover ? 'animate-spin' : ''}`} />
                     <span>{isSearchingCover ? 'Searching Steam & Local...' : 'Auto-Find Artwork (Steam/Local)'}</span>
@@ -503,11 +451,11 @@ export const EditGameModal: React.FC = () => {
 
                 <div className="flex gap-4 items-start">
                   {/* Live Poster Preview */}
-                  <div className="w-20 aspect-[2/3] rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700/80 bg-zinc-200 dark:bg-zinc-900 shrink-0 flex items-center justify-center shadow-sm">
+                  <div className="w-20 aspect-[2/3] rounded-xl overflow-hidden border border-subtle bg-base shrink-0 flex items-center justify-center shadow-sm">
                     {coverUrl ? (
                       <img src={coverUrl} alt="Cover Preview" className="w-full h-full object-cover" />
                     ) : (
-                      <ImageIcon className="w-6 h-6 text-zinc-400" />
+                      <ImageIcon className="w-6 h-6 text-muted" />
                     )}
                   </div>
 
@@ -518,18 +466,12 @@ export const EditGameModal: React.FC = () => {
                         value={coverUrl}
                         onChange={(e) => setCoverUrl(e.target.value)}
                         placeholder="Image URL or local file path..."
-                        className={`flex-1 h-10 px-3.5 text-xs rounded-xl border outline-none ${
-                          isDark
-                            ? 'bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100'
-                            : 'bg-white border-zinc-200 focus:border-emerald-500 text-zinc-900'
-                        }`}
+                        className="flex-1 h-10 px-3.5 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none focus:border-accent select-text"
                       />
                       <button
                         type="button"
                         onClick={handleSelectCover}
-                        className={`h-10 flex items-center gap-1.5 px-3.5 rounded-xl border text-xs font-semibold shrink-0 cursor-pointer transition-colors ${
-                          isDark ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700' : 'bg-zinc-100 border-zinc-300 hover:bg-zinc-200'
-                        }`}
+                        className="h-10 flex items-center gap-1.5 px-3.5 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-xs"
                       >
                         <ImageIcon className="w-3.5 h-3.5" />
                         <span>Browse</span>
@@ -539,7 +481,7 @@ export const EditGameModal: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setCoverUrl('')}
-                        className="text-[11px] text-zinc-400 hover:text-red-400 cursor-pointer"
+                        className="text-[11px] text-muted hover:text-red-400 cursor-pointer"
                       >
                         Clear cover image (use icon fallback)
                       </button>
@@ -549,9 +491,9 @@ export const EditGameModal: React.FC = () => {
               </div>
 
               {/* Logo / Icon Section */}
-              <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-950/40">
+              <div className="p-4 rounded-2xl border border-subtle bg-base/40">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                  <span className="text-xs font-semibold text-primary">
                     App Icon / Logo
                   </span>
                   {executablePath && (
@@ -559,7 +501,7 @@ export const EditGameModal: React.FC = () => {
                       type="button"
                       onClick={handleExtractFromExe}
                       disabled={isExtractingIcon}
-                      className="flex items-center gap-1 text-[11px] font-medium text-sky-500 hover:underline cursor-pointer"
+                      className="flex items-center gap-1 text-[11px] font-medium text-accent hover:underline cursor-pointer"
                     >
                       <RefreshCw className={`w-3 h-3 ${isExtractingIcon ? 'animate-spin' : ''}`} />
                       <span>Re-extract from Executable</span>
@@ -569,11 +511,11 @@ export const EditGameModal: React.FC = () => {
 
                 <div className="flex gap-4 items-center">
                   {/* Live Icon Preview Tile */}
-                  <div className="w-14 h-14 rounded-2xl p-2 border border-zinc-200 dark:border-zinc-700/80 bg-white/10 dark:bg-black/30 backdrop-blur-md shrink-0 flex items-center justify-center shadow-sm">
+                  <div className="w-14 h-14 rounded-2xl p-2 border border-subtle bg-base shrink-0 flex items-center justify-center shadow-sm">
                     {iconUrl ? (
                       <img src={iconUrl} alt="Icon Preview" className="w-full h-full object-contain" />
                     ) : (
-                      <Layers className="w-6 h-6 text-zinc-400" />
+                      <ImageIcon className="w-5 h-5 text-muted" />
                     )}
                   </div>
 
@@ -584,18 +526,12 @@ export const EditGameModal: React.FC = () => {
                         value={iconUrl}
                         onChange={(e) => setIconUrl(e.target.value)}
                         placeholder="Icon image URL, Base64 data URL, or file path..."
-                        className={`flex-1 h-10 px-3.5 text-xs rounded-xl border outline-none ${
-                          isDark
-                            ? 'bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100'
-                            : 'bg-white border-zinc-200 focus:border-emerald-500 text-zinc-900'
-                        }`}
+                        className="flex-1 h-10 px-3.5 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none focus:border-accent select-text"
                       />
                       <button
                         type="button"
                         onClick={handleSelectIcon}
-                        className={`h-10 flex items-center gap-1.5 px-3.5 rounded-xl border text-xs font-semibold shrink-0 cursor-pointer transition-colors ${
-                          isDark ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700' : 'bg-zinc-100 border-zinc-300 hover:bg-zinc-200'
-                        }`}
+                        className="h-10 flex items-center gap-1.5 px-3.5 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold shrink-0 cursor-pointer transition-colors shadow-xs"
                         title="Pick .ico, .png, or .exe file"
                       >
                         <ImageIcon className="w-3.5 h-3.5" />
@@ -606,7 +542,7 @@ export const EditGameModal: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setIconUrl('')}
-                        className="text-[11px] text-zinc-400 hover:text-red-400 cursor-pointer"
+                        className="text-[11px] text-muted hover:text-red-400 cursor-pointer"
                       >
                         Reset icon to monogram
                       </button>
@@ -616,25 +552,26 @@ export const EditGameModal: React.FC = () => {
               </div>
             </div>
           )}
-
-          {/* Footer Save & Cancel Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800/80">
-            <button
-              type="button"
-              onClick={() => setEditingGame(null)}
-              className="h-10 px-4 rounded-xl text-xs font-semibold border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="h-10 flex items-center gap-2 px-6 rounded-xl text-xs font-semibold bg-emerald-500 text-black hover:bg-emerald-400 active:scale-95 transition-all shadow-xs cursor-pointer"
-            >
-              <Check className="w-4 h-4 stroke-[2.5]" />
-              <span>Save Changes</span>
-            </button>
-          </div>
         </form>
+
+        {/* Footer Save & Cancel Buttons - Always visible */}
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-subtle bg-base/20 shrink-0">
+          <button
+            type="button"
+            onClick={() => setEditingGame(null)}
+            className="h-10 px-4 rounded-xl text-xs font-semibold border border-subtle text-muted hover:text-primary hover:bg-surface-hover transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form="edit-game-form"
+            className="h-10 flex items-center gap-2 px-6 rounded-xl text-xs font-semibold bg-accent text-accent-fg hover:bg-accent-hover active:scale-95 transition-all shadow-xs cursor-pointer"
+          >
+            <Check className="w-4 h-4 stroke-[2.5]" />
+            <span>Save Changes</span>
+          </button>
+        </div>
       </div>
     </div>
   );

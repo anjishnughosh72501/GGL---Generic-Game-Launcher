@@ -1,8 +1,63 @@
 @import "tailwindcss";
 
+@theme {
+  --color-base: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-surface-hover: var(--bg-surface-hover);
+  --color-subtle: var(--border-subtle);
+  --color-primary: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+}
+
+@utility bg-base {
+  background-color: var(--bg-base);
+}
+@utility bg-surface {
+  background-color: var(--bg-surface);
+}
+@utility bg-surface-hover {
+  background-color: var(--bg-surface-hover);
+}
+@utility border-subtle {
+  border-color: var(--border-subtle);
+}
+@utility text-primary {
+  color: var(--text-primary);
+}
+@utility text-muted {
+  color: var(--text-muted);
+}
+@utility bg-accent {
+  background-color: var(--accent);
+}
+@utility bg-accent-hover {
+  background-color: var(--accent-hover);
+}
+@utility text-accent {
+  color: var(--accent);
+}
+@utility border-accent {
+  border-color: var(--accent);
+}
+@utility text-accent-fg {
+  color: var(--accent-fg);
+}
+
 @layer base {
   :root {
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --bg-base: #09090B;
+    --bg-surface: #18181B;
+    --bg-surface-hover: #27272A;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --text-primary: #FAFAFA;
+    --text-muted: #A1A1AA;
+    --accent: #3B82F6;
+    --accent-hover: #2563EB;
+    --accent-fg: #FFFFFF;
   }
 
   body {
@@ -13,6 +68,8 @@
     overflow: hidden;
     height: 100vh;
     width: 100vw;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -26,7 +83,6 @@
     -webkit-app-region: no-drag !important;
   }
 }
-
 
 /* Custom Minimalist Scrollbars (macOS / Notion style) */
 ::-webkit-scrollbar {
@@ -48,33 +104,12 @@
   background: rgba(161, 161, 170, 0.45);
 }
 
-/* Glassmorphism & Apple Vibrancy */
-.glass-panel-dark {
-  background: rgba(24, 24, 27, 0.7);
+/* Glassmorphism & Ambient Blur Surfaces */
+.glass-surface {
+  background: var(--bg-surface);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-panel-light {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.glass-sidebar-dark {
-  background: rgba(15, 15, 18, 0.82);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.glass-sidebar-light {
-  background: rgba(244, 244, 245, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-subtle);
 }
 
 /* Custom smooth spring transition classes */

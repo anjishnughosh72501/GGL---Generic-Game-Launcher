@@ -15,11 +15,10 @@ import { useGameStore } from '../store/gameStore';
 import { getMonogram } from '../services/artwork';
 
 export const LaunchProcessHUD: React.FC = () => {
-  const { activeLaunch, dismissLaunchProcess, settings } = useGameStore();
+  const { activeLaunch, dismissLaunchProcess } = useGameStore();
 
   if (!activeLaunch) return null;
 
-  const isDark = settings.themeMode === 'dark';
   const { item, step, stepMessage, progress, details } = activeLaunch;
   const isComplete = step === 'running';
   const isError = step === 'error';
@@ -63,20 +62,25 @@ export const LaunchProcessHUD: React.FC = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ type: 'spring', stiffness: 450, damping: 28 }}
-          className={`w-96 rounded-2xl border shadow-2xl p-4.5 backdrop-blur-xl pointer-events-auto overflow-hidden ${
-            isDark
-              ? 'bg-zinc-900/95 border-zinc-800 text-zinc-100 shadow-black/60'
-              : 'bg-white/95 border-zinc-200 text-zinc-900 shadow-zinc-300/60'
-          }`}
+          className="w-96 rounded-2xl border border-subtle shadow-2xl p-4.5 backdrop-blur-xl pointer-events-auto overflow-hidden bg-surface/95 text-primary"
         >
-          {/* Header Bar */}
+          {/* Top Tag & Header Bar */}
+          <div className="flex items-center justify-between mb-2 pb-2 border-b border-subtle">
+            <span className="text-[10px] font-bold tracking-wider uppercase text-accent">
+              GGL Process Dispatcher
+            </span>
+            <button
+              onClick={dismissLaunchProcess}
+              className="p-1 rounded-lg hover:bg-surface-hover text-muted hover:text-primary transition-colors cursor-pointer"
+              title="Dismiss"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           <div className="flex items-center justify-between gap-3 mb-3">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div
-                className={`w-9 h-9 rounded-xl overflow-hidden shrink-0 flex items-center justify-center border shadow-xs ${
-                  isDark ? 'bg-zinc-800 border-zinc-700/60' : 'bg-zinc-100 border-zinc-200'
-                }`}
-              >
+              <div className="w-9 h-9 rounded-xl overflow-hidden shrink-0 flex items-center justify-center border border-subtle bg-base shadow-xs">
                 {item.coverUrl || item.iconUrl ? (
                   <img
                     src={item.coverUrl || item.iconUrl}
@@ -84,15 +88,15 @@ export const LaunchProcessHUD: React.FC = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-[11px] font-bold font-mono text-zinc-400">
+                  <span className="text-[11px] font-bold font-mono text-muted">
                     {getMonogram(item.title)}
                   </span>
                 )}
               </div>
 
               <div className="overflow-hidden">
-                <div className="text-xs font-bold truncate">{item.title}</div>
-                <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
+                <div className="text-xs font-bold truncate text-primary">{item.title}</div>
+                <div className="flex items-center gap-1.5 text-[10px] text-muted">
                   <Activity className="w-3 h-3 text-emerald-500 animate-pulse" />
                   <span className="capitalize">{step === 'running' ? 'Running' : 'Initializing process'}</span>
                   <span>•</span>
@@ -100,20 +104,13 @@ export const LaunchProcessHUD: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            <button
-              onClick={dismissLaunchProcess}
-              className="p-1 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full h-1.5 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-800 mb-3.5">
+          <div className="w-full h-1.5 rounded-full overflow-hidden bg-surface-hover mb-3.5">
             <motion.div
               className={`h-full rounded-full transition-all duration-300 ${
-                isError ? 'bg-red-500' : isComplete ? 'bg-emerald-500' : 'bg-sky-500'
+                isError ? 'bg-red-500' : isComplete ? 'bg-emerald-500' : 'bg-accent'
               }`}
               style={{ width: `${progress}%` }}
             />
@@ -130,25 +127,21 @@ export const LaunchProcessHUD: React.FC = () => {
                     isError ? (
                       <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
                     ) : (
-                      <Loader2 className="w-4 h-4 text-sky-500 animate-spin shrink-0" />
+                      <Loader2 className="w-4 h-4 text-accent animate-spin shrink-0" />
                     )
                   ) : (
-                    <div
-                      className={`w-4 h-4 rounded-full border border-dashed flex items-center justify-center shrink-0 ${
-                        isDark ? 'border-zinc-700' : 'border-zinc-300'
-                      }`}
-                    >
-                      <div className="w-1 h-1 rounded-full bg-zinc-400" />
+                    <div className="w-4 h-4 rounded-full border border-subtle border-dashed flex items-center justify-center shrink-0">
+                      <div className="w-1 h-1 rounded-full bg-muted" />
                     </div>
                   )}
 
                   <span
-                    className={`text-[11px] font-medium leading-tight ${
+                    className={`text-[11px] leading-tight ${
                       s.completed
-                        ? 'text-zinc-300 dark:text-zinc-200'
+                        ? 'text-primary font-medium'
                         : s.current
-                        ? 'text-zinc-900 dark:text-zinc-100 font-semibold'
-                        : 'text-zinc-400 dark:text-zinc-500'
+                        ? 'text-accent font-semibold'
+                        : 'text-muted'
                     }`}
                   >
                     {s.label}
@@ -163,26 +156,24 @@ export const LaunchProcessHUD: React.FC = () => {
             className={`p-2.5 rounded-xl border text-[10px] font-mono space-y-1 ${
               isError
                 ? 'bg-red-500/10 border-red-500/30 text-red-400'
-                : isDark
-                ? 'bg-zinc-950/70 border-zinc-800/80 text-zinc-400'
-                : 'bg-zinc-50 border-zinc-200 text-zinc-600'
+                : 'bg-base/80 border-subtle text-muted'
             }`}
           >
             <div className="flex items-center justify-between">
-              <span className="uppercase text-[9px] font-bold text-zinc-500">Method:</span>
-              <span className="text-zinc-300 font-semibold uppercase">{details.method}</span>
+              <span className="uppercase text-[9px] font-bold text-muted">Method:</span>
+              <span className="text-primary font-semibold uppercase">{details.method}</span>
             </div>
             <div className="truncate">
-              <span className="uppercase text-[9px] font-bold text-zinc-500 mr-1.5">Target:</span>
-              <span className="truncate">{details.target}</span>
+              <span className="uppercase text-[9px] font-bold text-muted mr-1.5">Target:</span>
+              <span className="truncate text-primary">{details.target}</span>
             </div>
             {details.args && (
               <div className="truncate">
-                <span className="uppercase text-[9px] font-bold text-zinc-500 mr-1.5">Args:</span>
-                <span className="truncate">{details.args}</span>
+                <span className="uppercase text-[9px] font-bold text-muted mr-1.5">Args:</span>
+                <span className="truncate text-primary">{details.args}</span>
               </div>
             )}
-            <div className="pt-1 border-t border-zinc-200/40 dark:border-zinc-800/60 text-zinc-300 font-sans text-[11px]">
+            <div className="pt-1 border-t border-subtle text-primary font-sans text-[11px]">
               {stepMessage}
             </div>
           </div>

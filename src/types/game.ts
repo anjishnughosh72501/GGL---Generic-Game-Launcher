@@ -1,7 +1,8 @@
 export type PlatformType = 'steam' | 'epic' | 'gog' | 'custom' | 'system';
 export type AppCategory = 'game' | 'app';
 export type ViewMode = 'grid-poster' | 'grid-square' | 'list';
-export type ThemeMode = 'dark' | 'light';
+export type ThemePalette = 'zinc' | 'spotify' | 'notion' | 'oneui' | 'glacier';
+export type ThemeMode = 'dark' | 'light' | 'system';
 
 export interface GameItem {
   id: string;
@@ -59,6 +60,7 @@ export interface LaunchProcessState {
 }
 
 export interface HubSettings {
+  themePalette: ThemePalette;
   themeMode: ThemeMode;
   viewMode: ViewMode;
   activeFilter: 'all' | 'game' | 'app' | 'favorites' | 'recent';

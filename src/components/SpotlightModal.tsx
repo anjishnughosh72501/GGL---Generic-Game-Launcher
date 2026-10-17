@@ -25,10 +25,8 @@ export const SpotlightModal: React.FC = () => {
     addProgramFromSystem,
     addCustomProgram,
     games,
-    settings,
   } = useGameStore();
 
-  const isDark = settings.themeMode === 'dark';
   const [activeTab, setActiveTab] = useState<'indexer' | 'custom'>('indexer');
   const [search, setSearch] = useState('');
 
@@ -185,21 +183,16 @@ export const SpotlightModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <motion.div
-
         initial={{ opacity: 0, scale: 0.96, y: -8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: -8 }}
         transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-        className={`w-full max-w-2xl rounded-2xl border shadow-2xl overflow-hidden flex flex-col ${
-          isDark
-            ? 'bg-zinc-900 border-zinc-800 text-zinc-100'
-            : 'bg-white border-zinc-200 text-zinc-900'
-        }`}
+        className="w-full max-w-2xl rounded-2xl border border-subtle bg-surface shadow-2xl overflow-hidden flex flex-col text-primary"
       >
         {/* Raycast / Spotlight Top Search Header */}
-        <div className="p-4 border-b border-zinc-200/80 dark:border-zinc-800/80 flex items-center justify-between gap-3">
+        <div className="p-4 border-b border-subtle flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1">
-            <Search className="w-5 h-5 text-zinc-400 shrink-0" />
+            <Search className="w-5 h-5 text-muted shrink-0" />
             <input
               type="text"
               autoFocus
@@ -210,24 +203,18 @@ export const SpotlightModal: React.FC = () => {
               }
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full text-sm bg-transparent outline-none placeholder:text-zinc-400 font-medium"
+              className="w-full text-sm bg-transparent outline-none placeholder:text-muted font-medium text-primary select-text"
             />
           </div>
 
           {/* Mode Pill Switcher */}
-          <div
-            className={`flex items-center p-0.5 rounded-xl border text-xs font-medium ${
-              isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200'
-            }`}
-          >
+          <div className="flex items-center p-0.5 rounded-xl border border-subtle bg-base text-xs font-medium">
             <button
               onClick={() => setActiveTab('indexer')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 activeTab === 'indexer'
-                  ? isDark
-                    ? 'bg-zinc-800 text-zinc-100 shadow-xs'
-                    : 'bg-white text-zinc-900 shadow-xs'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  ? 'bg-surface text-primary shadow-xs font-semibold border border-subtle'
+                  : 'text-muted hover:text-primary'
               }`}
             >
               Detected Software ({systemApps.length})
@@ -236,10 +223,8 @@ export const SpotlightModal: React.FC = () => {
               onClick={() => setActiveTab('custom')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 activeTab === 'custom'
-                  ? isDark
-                    ? 'bg-zinc-800 text-zinc-100 shadow-xs'
-                    : 'bg-white text-zinc-900 shadow-xs'
-                  : 'text-zinc-500 hover:text-zinc-300'
+                  ? 'bg-surface text-primary shadow-xs font-semibold border border-subtle'
+                  : 'text-muted hover:text-primary'
               }`}
             >
               Custom File / Emulator
@@ -248,7 +233,7 @@ export const SpotlightModal: React.FC = () => {
 
           <button
             onClick={() => setSpotlightOpen(false)}
-            className="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+            className="p-1 rounded-lg hover:bg-surface-hover text-muted hover:text-primary cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -257,7 +242,7 @@ export const SpotlightModal: React.FC = () => {
         {/* Modal Body */}
         {activeTab === 'indexer' ? (
           /* System App Indexer List */
-          <div className="max-h-[440px] overflow-y-auto p-2 divide-y divide-zinc-100 dark:divide-zinc-800/40">
+          <div className="max-h-[440px] overflow-y-auto p-2 divide-y divide-subtle">
             {filteredApps.length > 0 ? (
               filteredApps.map((app, idx) => {
                 const uniqueKey = `${app.targetPath.toLowerCase()}|${(app.launchArgs || '').toLowerCase()}`;
@@ -267,24 +252,20 @@ export const SpotlightModal: React.FC = () => {
                 return (
                   <div
                     key={idx}
-                    className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
-                      isDark ? 'hover:bg-zinc-800/50' : 'hover:bg-zinc-50'
-                    }`}
+                    className="flex items-center justify-between p-3 rounded-xl transition-colors hover:bg-surface-hover"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
                           isBlueStacks
-                            ? 'bg-indigo-500/10 border-indigo-500/30 text-indigo-400'
-                            : isDark
-                            ? 'bg-zinc-800 border-zinc-700/60 text-zinc-400'
-                            : 'bg-zinc-100 border-zinc-200 text-zinc-500'
+                            ? 'bg-accent/15 border-accent/30 text-accent'
+                            : 'bg-base border-subtle text-muted'
                         }`}
                       >
                         {isBlueStacks ? (
                           <Smartphone className="w-5 h-5" />
                         ) : app.category === 'game' ? (
-                          <Gamepad2 className="w-5 h-5 text-emerald-500" />
+                          <Gamepad2 className="w-5 h-5 text-accent" />
                         ) : (
                           <HardDrive className="w-5 h-5" />
                         )}
@@ -292,22 +273,22 @@ export const SpotlightModal: React.FC = () => {
 
                       <div className="overflow-hidden">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold truncate text-zinc-900 dark:text-zinc-100">
+                          <span className="text-xs font-semibold truncate text-primary">
                             {app.name}
                           </span>
                           {isBlueStacks && (
-                            <span className="text-[10px] font-medium px-2 py-0.2 rounded-full bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shrink-0">
+                            <span className="text-[10px] font-medium px-2 py-0.2 rounded-full bg-accent/15 text-accent border border-accent/30 shrink-0">
                               BlueStacks Game
                             </span>
                           )}
                           {app.source === 'desktop' && (
-                            <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-zinc-800 text-zinc-400 shrink-0">
+                            <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-base text-muted shrink-0 border border-subtle">
                               Desktop
                             </span>
                           )}
                         </div>
 
-                        <div className="text-[11px] text-zinc-400 truncate font-mono mt-0.5">
+                        <div className="text-[11px] text-muted truncate font-mono mt-0.5">
                           {app.launchArgs ? `${app.targetPath} ${app.launchArgs}` : app.targetPath}
                         </div>
                       </div>
@@ -315,23 +296,17 @@ export const SpotlightModal: React.FC = () => {
 
                     <div className="shrink-0 ml-4 flex items-center gap-2">
                       {isAdded ? (
-                        <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-500 px-2.5 py-1 rounded-lg bg-emerald-500/10">
+                        <span className="flex items-center gap-1 text-[11px] font-semibold text-accent px-2.5 py-1 rounded-lg bg-accent/15 border border-accent/25">
                           <CheckCircle2 className="w-3.5 h-3.5" />
-                          <span>In Hub</span>
+                          <span>In Library</span>
                         </span>
                       ) : (
                         <button
                           onClick={() => addProgramFromSystem(app)}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                            isBlueStacks
-                              ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs'
-                              : isDark
-                              ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-100'
-                              : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
-                          }`}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent text-accent-fg hover:bg-accent-hover transition-all cursor-pointer shadow-xs"
                         >
                           <Plus className="w-3.5 h-3.5" />
-                          <span>Add to Hub</span>
+                          <span>Add to Library</span>
                         </button>
                       )}
                     </div>
@@ -339,7 +314,7 @@ export const SpotlightModal: React.FC = () => {
                 );
               })
             ) : (
-              <div className="py-12 text-center text-xs text-zinc-400">
+              <div className="py-12 text-center text-xs text-muted">
                 No matching desktop software found on this PC.
               </div>
             )}
@@ -349,17 +324,13 @@ export const SpotlightModal: React.FC = () => {
           <form onSubmit={handleAddCustom} className="p-6 space-y-4 max-h-[460px] overflow-y-auto">
             {/* Quick Emulator Suggestions Row if BlueStacks is detected */}
             {emulatorGames.length > 0 && (
-              <div
-                className={`p-3 rounded-xl border mb-3 ${
-                  isDark ? 'bg-indigo-950/20 border-indigo-900/40' : 'bg-indigo-50/50 border-indigo-200'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs font-semibold text-indigo-400 mb-2">
+              <div className="p-3 rounded-xl border border-accent/25 bg-accent/5 mb-3">
+                <div className="flex items-center justify-between text-xs font-semibold text-accent mb-2">
                   <span className="flex items-center gap-1.5">
                     <Smartphone className="w-3.5 h-3.5" />
                     Detected BlueStacks / Emulator Games:
                   </span>
-                  <span className="text-[10px] text-zinc-400 font-normal">Click to auto-fill form</span>
+                  <span className="text-[10px] text-muted font-normal">Click to auto-fill form</span>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -368,13 +339,9 @@ export const SpotlightModal: React.FC = () => {
                       key={idx}
                       type="button"
                       onClick={() => handlePopulateFromApp(eg)}
-                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
-                        isDark
-                          ? 'bg-zinc-900 hover:bg-zinc-800 border-zinc-700 text-zinc-200'
-                          : 'bg-white hover:bg-zinc-100 border-zinc-300 text-zinc-800'
-                      }`}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border border-subtle bg-surface hover:bg-surface-hover text-primary transition-colors cursor-pointer shadow-xs"
                     >
-                      <Plus className="w-3 h-3 text-indigo-400" />
+                      <Plus className="w-3 h-3 text-accent" />
                       <span>{eg.name}</span>
                     </button>
                   ))}
@@ -384,7 +351,7 @@ export const SpotlightModal: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium mb-1 text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-medium mb-1 text-primary">
                   Program Title *
                 </label>
                 <input
@@ -392,31 +359,23 @@ export const SpotlightModal: React.FC = () => {
                   placeholder="e.g. Pokémon TCGP, Genshin, RetroArch"
                   value={customTitle}
                   onChange={(e) => setCustomTitle(e.target.value)}
-                  className={`w-full px-3 py-2 text-xs rounded-xl border outline-none font-medium ${
-                    isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-zinc-50 border-zinc-200 text-zinc-900'
-                  }`}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none font-medium focus:border-accent focus:ring-1 focus:ring-accent/20 select-text"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1 text-zinc-700 dark:text-zinc-300">
+                <label className="block text-xs font-medium mb-1 text-primary">
                   Category
                 </label>
-                <div
-                  className={`flex items-center p-0.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-100 border-zinc-200'
-                  }`}
-                >
+                <div className="flex items-center p-0.5 rounded-xl border border-subtle bg-base text-xs">
                   <button
                     type="button"
                     onClick={() => setCustomCategory('game')}
                     className={`flex-1 py-1.5 rounded-lg transition-all font-medium cursor-pointer ${
                       customCategory === 'game'
-                        ? isDark
-                          ? 'bg-zinc-800 text-zinc-100 shadow-xs'
-                          : 'bg-white text-zinc-900 shadow-xs'
-                        : 'text-zinc-400'
+                        ? 'bg-surface text-primary shadow-xs font-semibold border border-subtle'
+                        : 'text-muted hover:text-primary'
                     }`}
                   >
                     Game
@@ -426,10 +385,8 @@ export const SpotlightModal: React.FC = () => {
                     onClick={() => setCustomCategory('app')}
                     className={`flex-1 py-1.5 rounded-lg transition-all font-medium cursor-pointer ${
                       customCategory === 'app'
-                        ? isDark
-                          ? 'bg-zinc-800 text-zinc-100 shadow-xs'
-                          : 'bg-white text-zinc-900 shadow-xs'
-                        : 'text-zinc-400'
+                        ? 'bg-surface text-primary shadow-xs font-semibold border border-subtle'
+                        : 'text-muted hover:text-primary'
                     }`}
                   >
                     Application
@@ -440,7 +397,7 @@ export const SpotlightModal: React.FC = () => {
 
             {/* Executable Path Picker */}
             <div>
-              <label className="block text-xs font-medium mb-1 text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-medium mb-1 text-primary">
                 Executable File (.exe, .bat, or .lnk shortcut) *
               </label>
               <div className="flex gap-2">
@@ -449,17 +406,13 @@ export const SpotlightModal: React.FC = () => {
                   placeholder="C:\Program Files\BlueStacks_nxt\HD-Player.exe or Desktop shortcut"
                   value={customExe}
                   onChange={(e) => setCustomExe(e.target.value)}
-                  className={`flex-1 px-3 py-2 text-xs rounded-xl border outline-none font-mono ${
-                    isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-zinc-50 border-zinc-200 text-zinc-900'
-                  }`}
+                  className="flex-1 px-3 py-2 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none font-mono focus:border-accent select-text"
                   required
                 />
                 <button
                   type="button"
                   onClick={handleSelectExe}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-semibold shrink-0 cursor-pointer ${
-                    isDark ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700' : 'bg-zinc-100 hover:bg-zinc-200 border-zinc-300'
-                  }`}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold shrink-0 cursor-pointer shadow-xs transition-colors"
                 >
                   <FolderOpen className="w-3.5 h-3.5" />
                   <span>Browse...</span>
@@ -469,7 +422,7 @@ export const SpotlightModal: React.FC = () => {
 
             {/* Launch Arguments */}
             <div>
-              <label className="block text-xs font-medium mb-1 text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-medium mb-1 text-primary">
                 Launch Arguments (e.g. BlueStacks package name or custom parameters)
               </label>
               <input
@@ -477,33 +430,27 @@ export const SpotlightModal: React.FC = () => {
                 placeholder='--instance Pie64 --cmd launchApp --package "jp.pokemon.pokemontcgp"'
                 value={customArgs}
                 onChange={(e) => setCustomArgs(e.target.value)}
-                className={`w-full px-3 py-2 text-xs rounded-xl border outline-none font-mono ${
-                  isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-zinc-50 border-zinc-200 text-zinc-900'
-                }`}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none font-mono focus:border-accent select-text"
               />
             </div>
 
             {/* Cover Image or File */}
             <div>
-              <label className="block text-xs font-medium mb-1 text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-medium mb-1 text-primary">
                 Poster / Icon Artwork (URL or local .ico/.png image file)
               </label>
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="C:\ProgramData\BlueStacks_nxt\Engine\Pie64\AppCache\jp.pokemon.pokemontcgp.ico or URL"
+                  placeholder="URL or file path to cover poster"
                   value={customCover}
                   onChange={(e) => setCustomCover(e.target.value)}
-                  className={`flex-1 px-3 py-2 text-xs rounded-xl border outline-none ${
-                    isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-zinc-50 border-zinc-200 text-zinc-900'
-                  }`}
+                  className="flex-1 px-3 py-2 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none focus:border-accent select-text"
                 />
                 <button
                   type="button"
                   onClick={handleSelectCover}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-semibold shrink-0 cursor-pointer ${
-                    isDark ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700' : 'bg-zinc-100 hover:bg-zinc-200 border-zinc-300'
-                  }`}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold shrink-0 cursor-pointer shadow-xs transition-colors"
                 >
                   <ImageIcon className="w-3.5 h-3.5" />
                   <span>Browse...</span>
@@ -513,7 +460,7 @@ export const SpotlightModal: React.FC = () => {
 
             {/* Tags */}
             <div>
-              <label className="block text-xs font-medium mb-1 text-zinc-700 dark:text-zinc-300">
+              <label className="block text-xs font-medium mb-1 text-primary">
                 Tags & Categories
               </label>
               <div className="flex gap-2 mb-2">
@@ -528,16 +475,12 @@ export const SpotlightModal: React.FC = () => {
                       handleAddTag();
                     }
                   }}
-                  className={`flex-1 px-3 py-1.5 text-xs rounded-xl border outline-none ${
-                    isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-zinc-50 border-zinc-200 text-zinc-900'
-                  }`}
+                  className="flex-1 px-3 py-1.5 text-xs rounded-xl border border-subtle bg-base text-primary placeholder:text-muted outline-none focus:border-accent select-text"
                 />
                 <button
                   type="button"
                   onClick={handleAddTag}
-                  className={`px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer ${
-                    isDark ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-100 border-zinc-300'
-                  }`}
+                  className="px-3 py-1.5 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-primary text-xs font-semibold cursor-pointer shadow-xs transition-colors"
                 >
                   Add
                 </button>
@@ -546,13 +489,13 @@ export const SpotlightModal: React.FC = () => {
                 {customTags.map((t) => (
                   <span
                     key={t}
-                    className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+                    className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] bg-base border border-subtle text-primary"
                   >
                     #{t}
                     <button
                       type="button"
                       onClick={() => setCustomTags(customTags.filter((x) => x !== t))}
-                      className="hover:text-red-500 ml-1"
+                      className="hover:text-red-500 ml-1 cursor-pointer"
                     >
                       ×
                     </button>
@@ -561,37 +504,33 @@ export const SpotlightModal: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-subtle">
               <button
                 type="button"
                 onClick={() => setSpotlightOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-medium border border-zinc-300 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-medium border border-subtle text-muted hover:text-primary hover:bg-surface-hover cursor-pointer transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-black hover:bg-emerald-400 transition-colors shadow-xs cursor-pointer"
+                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold bg-accent text-accent-fg hover:bg-accent-hover transition-colors shadow-xs cursor-pointer"
               >
                 <Check className="w-4 h-4 stroke-[2.5]" />
-                Add to Hub
+                Add to Library
               </button>
             </div>
           </form>
         )}
 
         {/* Modal Footer info */}
-        <div
-          className={`px-4 py-2.5 border-t text-[11px] flex items-center justify-between ${
-            isDark ? 'border-zinc-800/80 bg-zinc-950/60 text-zinc-400' : 'border-zinc-200/80 bg-zinc-50 text-zinc-500'
-          }`}
-        >
+        <div className="px-4 py-2.5 border-t border-subtle bg-base/50 text-[11px] flex items-center justify-between text-muted">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Indexes Desktop, Start Menu, Registry & BlueStacks Games</span>
+            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            <span>GGL &bull; Indexes Desktop, Start Menu, Registry & BlueStacks Games</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <kbd className="px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 font-mono text-[10px]">
+            <kbd className="px-1.5 py-0.5 rounded bg-surface border border-subtle font-mono text-[10px] text-muted">
               Esc
             </kbd>
             <span>to close</span>

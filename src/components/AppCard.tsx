@@ -151,18 +151,14 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
       whileHover={{ y: -6, scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 450, damping: 28 }}
       className={`group relative flex flex-col rounded-2xl border transition-all duration-300 ${
-        isMenuOpen ? 'z-40 ring-2 ring-emerald-500/40 shadow-2xl shadow-black/80' : 'hover:z-20'
-      } ${
-        isDark
-          ? 'bg-zinc-900/90 hover:bg-zinc-800/95 border-zinc-800/80 hover:border-emerald-500/40 shadow-xs hover:shadow-2xl hover:shadow-black/70'
-          : 'bg-white hover:bg-zinc-50 border-zinc-200/80 hover:border-emerald-500/40 shadow-xs hover:shadow-xl hover:shadow-zinc-300/40'
-      }`}
+        isMenuOpen ? 'z-40 ring-2 ring-accent/50 shadow-2xl' : 'hover:z-20'
+      } bg-surface hover:bg-surface-hover border-subtle hover:border-accent/40 shadow-xs hover:shadow-2xl`}
     >
       {/* Artwork Container (strictly contains image / icon with rounded top) */}
       <div
         className={`relative w-full rounded-t-2xl overflow-hidden flex items-center justify-center ${
           isSquare ? 'aspect-square' : 'aspect-[2/3]'
-        } ${isDark ? 'bg-zinc-950/60' : 'bg-zinc-100'}`}
+        } bg-base/60`}
       >
         {/* Tier 1 & 3: Cover Image with Smooth Hover Zoom */}
         {hasCover ? (
@@ -187,11 +183,7 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
                 onError={() => setIconUrl(null)}
               />
             </div>
-            <span
-              className={`text-xs font-semibold mt-3 text-center line-clamp-2 px-3 transition-colors ${
-                isDark ? 'text-zinc-200 group-hover:text-emerald-400' : 'text-zinc-800 group-hover:text-emerald-600'
-              }`}
-            >
+            <span className="text-xs font-semibold mt-3 text-center line-clamp-2 px-3 transition-colors text-primary group-hover:text-accent">
               {item.title}
             </span>
           </div>
@@ -201,20 +193,10 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
             className="w-full h-full flex flex-col items-center justify-center p-6 text-center transition-transform duration-500 group-hover:scale-105"
             style={{ background: getSoftSlateGradient(item.title, isDark) }}
           >
-            <div
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg tracking-wider shadow-sm border transition-all duration-300 group-hover:scale-115 ${
-                isDark
-                  ? 'bg-zinc-800/80 text-zinc-100 border-zinc-700/60'
-                  : 'bg-white/90 text-zinc-800 border-zinc-200'
-              }`}
-            >
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg tracking-wider shadow-sm border border-subtle bg-surface text-primary transition-all duration-300 group-hover:scale-115">
               {getMonogram(item.title)}
             </div>
-            <span
-              className={`text-xs font-medium mt-3 line-clamp-2 px-2 transition-colors ${
-                isDark ? 'text-zinc-300 group-hover:text-emerald-400' : 'text-zinc-700 group-hover:text-emerald-600'
-              }`}
-            >
+            <span className="text-xs font-medium mt-3 line-clamp-2 px-2 transition-colors text-muted group-hover:text-accent">
               {item.title}
             </span>
           </div>
@@ -225,13 +207,7 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
 
         {/* Top Badges (Category & Favorite) */}
         <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none z-10">
-          <span
-            className={`px-2 py-0.5 text-[10px] font-medium tracking-wide rounded-full backdrop-blur-md shadow-xs transition-transform duration-200 group-hover:scale-105 ${
-              isDark
-                ? 'bg-black/60 text-zinc-300 border border-white/10'
-                : 'bg-white/80 text-zinc-700 border border-black/5'
-            }`}
-          >
+          <span className="px-2 py-0.5 text-[10px] font-medium tracking-wide rounded-full backdrop-blur-md shadow-xs transition-transform duration-200 group-hover:scale-105 bg-surface/85 text-primary border border-subtle">
             {item.category === 'game' ? 'Game' : 'App'}
           </span>
 
@@ -240,11 +216,7 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
               e.stopPropagation();
               toggleFavorite(item.id);
             }}
-            className={`p-1.5 rounded-full transition-all duration-200 pointer-events-auto backdrop-blur-md shadow-xs cursor-pointer hover:scale-115 active:scale-90 ${
-              isDark
-                ? 'bg-black/60 hover:bg-black text-zinc-400'
-                : 'bg-white/80 hover:bg-white text-zinc-500'
-            }`}
+            className="p-1.5 rounded-full transition-all duration-200 pointer-events-auto backdrop-blur-md shadow-xs cursor-pointer hover:scale-115 active:scale-90 bg-surface/85 hover:bg-surface text-muted hover:text-primary border border-subtle"
             title={item.favorite ? 'Remove Favorite' : 'Mark Favorite'}
           >
             <Star
@@ -263,12 +235,10 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
             e.stopPropagation();
             setActiveMenuId(isMenuOpen ? null : item.id);
           }}
-          className={`p-1.5 rounded-full backdrop-blur-md transition-all duration-200 cursor-pointer shadow-sm hover:scale-110 active:scale-90 ${
+          className={`p-1.5 rounded-full backdrop-blur-md transition-all duration-200 cursor-pointer shadow-sm hover:scale-110 active:scale-90 border border-subtle ${
             isMenuOpen
-              ? 'bg-emerald-500 text-black shadow-md'
-              : isDark
-              ? 'bg-black/60 hover:bg-black text-zinc-300'
-              : 'bg-white/85 hover:bg-white text-zinc-700'
+              ? 'bg-accent text-accent-fg shadow-md'
+              : 'bg-surface/85 hover:bg-surface text-muted hover:text-primary'
           }`}
           title="Options"
         >
@@ -292,9 +262,7 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -4 }}
               transition={{ duration: 0.12 }}
-              className={`absolute top-10 right-2 w-44 rounded-2xl border p-1.5 shadow-2xl z-50 text-xs backdrop-blur-2xl ${
-                isDark ? 'bg-zinc-900/98 border-zinc-700 text-zinc-200' : 'bg-white/98 border-zinc-200 text-zinc-800'
-              }`}
+              className="absolute top-10 right-2 w-44 rounded-2xl border border-subtle bg-surface/98 p-1.5 shadow-2xl z-50 text-xs backdrop-blur-2xl text-primary"
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -302,16 +270,16 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
                   setActiveMenuId(null);
                   handlePlayButtonClick(e);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left font-medium cursor-pointer transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-hover text-left font-medium cursor-pointer transition-colors"
               >
-                <Play className="w-3.5 h-3.5 text-emerald-500 shrink-0 fill-current" />
+                <Play className="w-3.5 h-3.5 text-accent shrink-0 fill-current" />
                 <span>Play</span>
               </button>
               <button
                 onClick={handleShowInFolder}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left font-medium cursor-pointer transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-hover text-left font-medium cursor-pointer transition-colors"
               >
-                <FolderOpen className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                <FolderOpen className="w-3.5 h-3.5 text-accent shrink-0" />
                 <span>Show in Explorer</span>
               </button>
               <button
@@ -319,9 +287,9 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
                   setActiveMenuId(null);
                   setEditingGame(item);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left font-medium cursor-pointer transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-hover text-left font-medium cursor-pointer transition-colors"
               >
-                <Edit2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <Edit2 className="w-3.5 h-3.5 text-muted shrink-0" />
                 <span>Edit Details</span>
               </button>
               <button
@@ -329,9 +297,9 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
                   setActiveMenuId(null);
                   toggleHide(item.id);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left font-medium cursor-pointer transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-hover text-left font-medium cursor-pointer transition-colors"
               >
-                <EyeOff className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                <EyeOff className="w-3.5 h-3.5 text-muted shrink-0" />
                 <span>{item.hidden ? 'Unhide' : 'Hide from View'}</span>
               </button>
               {item.isCustom && (
@@ -351,30 +319,26 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
         )}
       </AnimatePresence>
 
-
-
       {/* Card Info Details with Explicit "Play" Button */}
       <div className="p-3.5 flex flex-col justify-between flex-1 gap-2.5">
         <div>
           <h3
-            className={`text-xs font-semibold leading-snug line-clamp-1 transition-colors ${
-              isDark ? 'text-zinc-100 group-hover:text-emerald-400' : 'text-zinc-900 group-hover:text-emerald-600'
-            }`}
+            className="text-xs font-semibold leading-snug line-clamp-1 transition-colors text-primary group-hover:text-accent"
             title={item.title}
           >
             {item.title}
           </h3>
 
-          <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 mt-1">
+          <div className="flex items-center gap-1.5 text-[11px] text-muted mt-1">
             <Clock className="w-3 h-3 shrink-0" />
             <span>{formatLastPlayed(item.lastPlayed)}</span>
           </div>
         </div>
 
         {/* Footer Area: Platform Pill + Prominent "Play" Button */}
-        <div className="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800/60">
-          <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
-            <Flame className="w-3.5 h-3.5 text-orange-500 transition-transform duration-200 group-hover:scale-125" />
+        <div className="flex items-center justify-between pt-2 border-t border-subtle">
+          <div className="flex items-center gap-1.5 text-[11px] text-muted font-medium">
+            <Flame className="w-3.5 h-3.5 text-accent transition-transform duration-200 group-hover:scale-125" />
             <span>{item.playCount || 0}</span>
           </div>
 
@@ -384,10 +348,10 @@ export const AppCard: React.FC<AppCardProps> = ({ item, viewMode }) => {
             disabled={isCurrentLaunching && !isRunning}
             className={`group/btn flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold shadow-xs transition-all duration-200 cursor-pointer ${
               isRunning
-                ? 'bg-emerald-600 text-white'
+                ? 'bg-accent/80 text-accent-fg'
                 : isCurrentLaunching
-                ? 'bg-emerald-500/80 text-black animate-pulse'
-                : 'bg-emerald-500 hover:bg-emerald-400 text-black hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-emerald-500/25'
+                ? 'bg-accent/60 text-accent-fg animate-pulse'
+                : 'bg-accent hover:bg-accent-hover text-accent-fg hover:scale-105 active:scale-95 hover:shadow-lg'
             }`}
             title={`Play ${item.title}`}
           >
