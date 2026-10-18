@@ -12,7 +12,9 @@
     "dev": "concurrently -k -p \"[{name}]\" -n \"VITE,APP\" -c \"cyan,magenta\" \"vite\" \"node dev-electron.cjs\"",
     "start": "electron .",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build && electron-builder --win",
+    "package:dir": "npm run build && electron-builder --dir"
   },
   "keywords": [
     "game-launcher",
@@ -45,11 +47,40 @@
     "concurrently": "^10.0.6",
     "cross-env": "^10.1.0",
     "electron": "^44.9.0",
+    "electron-builder": "^26.15.3",
     "esbuild": "^0.28.2",
     "postcss": "^8.5.30",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.5"
+  },
+  "build": {
+    "appId": "com.ggl.gamelauncher",
+    "productName": "GGL - Generic Game Launcher",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "public/**/*",
+      "electron/scripts/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "public/icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "GGL - Generic Game Launcher"
+    }
   }
 }

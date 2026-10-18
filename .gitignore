@@ -22,6 +22,8 @@ node_modules/
 # Production build outputs
 dist/
 dist-electron/
+release/
+*.exe
 
 # Editor directories and files
 .vscode/*
