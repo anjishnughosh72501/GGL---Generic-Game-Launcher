@@ -24,8 +24,8 @@ export const StatsModal: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-subtle">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-accent text-accent-fg p-1.5 flex items-center justify-center shadow-xs">
-              <AppLogo className="w-full h-full" variant="white" />
+            <div className="w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-xs border border-zinc-200">
+              <AppLogo className="w-full h-full" variant="app" />
             </div>
             <div>
               <h2 className="text-sm font-semibold text-primary">GGL Telemetry & Insights</h2>

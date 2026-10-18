@@ -8,10 +8,10 @@ import {
   ArrowUpDown,
   Eye,
   EyeOff,
+  Settings,
 } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { ViewMode, HubSettings } from '../types/game';
-import { ThemeSwitcher } from './ThemeSwitcher';
 import { AppLogo } from './AppLogo';
 
 export const Header: React.FC = () => {
@@ -22,9 +22,8 @@ export const Header: React.FC = () => {
     setSortBy,
     toggleSortOrder,
     toggleShowHidden,
+    setSettingsOpen,
   } = useGameStore();
-
-  const isDark = settings.themeMode === 'dark';
 
   const viewModes: Array<{ id: ViewMode; icon: React.ReactNode; label: string }> = [
     { id: 'grid-poster', icon: <LayoutGrid className="w-3.5 h-3.5" />, label: 'Poster Grid' },
@@ -40,16 +39,22 @@ export const Header: React.FC = () => {
   ];
 
   return (
-    <header className="relative z-40 h-16 px-6 border-b border-subtle bg-surface/90 backdrop-blur-md shrink-0 flex items-center justify-between gap-4 transition-colors duration-200">
+    <header
+      className="relative z-40 h-16 px-6 pr-36 border-b border-subtle bg-surface/90 backdrop-blur-md shrink-0 flex items-center justify-between gap-4 transition-colors duration-200 select-none"
+      style={{ WebkitAppRegion: 'drag' } as any}
+    >
       {/* App Branding & Search Input */}
-      <div className="flex items-center gap-3 flex-1 max-w-lg">
-        {/* GGL Branding Badge with Logo */}
+      <div
+        className="flex items-center gap-3 flex-1 max-w-lg"
+        style={{ WebkitAppRegion: 'no-drag' } as any}
+      >
+        {/* GGL Branding Badge with White-Background Logo */}
         <div
           className="flex items-center gap-2.5 select-none shrink-0"
           title="GGL - Generic Game Launcher"
         >
-          <div className="w-8 h-8 rounded-xl bg-accent text-accent-fg p-1.5 flex items-center justify-center shadow-xs">
-            <AppLogo className="w-full h-full" variant="white" />
+          <div className="w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-xs border border-zinc-200">
+            <AppLogo className="w-full h-full" variant="app" />
           </div>
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-black tracking-wider font-mono text-primary">
@@ -62,10 +67,7 @@ export const Header: React.FC = () => {
         </div>
 
         {/* Search Bar with Full Text Selection & Token Styling */}
-        <div
-          className="relative flex-1 group"
-          style={{ WebkitAppRegion: 'no-drag' } as any}
-        >
+        <div className="relative flex-1 group">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-muted group-hover:text-accent transition-colors duration-200" />
           <input
             type="text"
@@ -85,11 +87,11 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Controls: Appearance, Sort, View Mode, Visibility */}
-      <div className="flex items-center gap-2.5 shrink-0">
-        {/* Appearance Popover Switcher */}
-        <ThemeSwitcher />
-
+      {/* Right Controls: Sort, View Mode, Visibility, Settings */}
+      <div
+        className="flex items-center gap-2.5 shrink-0"
+        style={{ WebkitAppRegion: 'no-drag' } as any}
+      >
         {/* Sort Controls */}
         <div className="flex items-center gap-1.5">
           <select
@@ -145,6 +147,16 @@ export const Header: React.FC = () => {
           title={settings.showHidden ? 'Hide hidden items' : 'Show hidden items'}
         >
           {settings.showHidden ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+        </button>
+
+        {/* Settings Button */}
+        <button
+          onClick={() => setSettingsOpen(true)}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-subtle bg-surface hover:bg-surface-hover text-muted hover:text-primary transition-all duration-200 text-xs font-medium cursor-pointer shadow-xs"
+          title="Open Settings & Themes"
+        >
+          <Settings className="w-3.5 h-3.5" />
+          <span className="hidden md:inline text-[11px] font-medium">Settings</span>
         </button>
       </div>
     </header>

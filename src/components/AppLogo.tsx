@@ -1,10 +1,13 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { resolveEffectiveMode } from '../styles/themes';
+import logoApp from '../assets/logo.png';
+import logoDark from '../assets/logo-dark.png';
+import logoWhite from '../assets/logo-white.png';
 
 interface AppLogoProps {
   className?: string;
-  variant?: 'auto' | 'white' | 'dark';
+  variant?: 'auto' | 'white' | 'dark' | 'app';
   alt?: string;
 }
 
@@ -17,13 +20,15 @@ export const AppLogo: React.FC<AppLogoProps> = ({
   const isDark = resolveEffectiveMode(settings.themeMode) === 'dark';
 
   const src =
-    variant === 'white'
-      ? '/logo-white.png'
+    variant === 'app'
+      ? logoApp
+      : variant === 'white'
+      ? logoWhite
       : variant === 'dark'
-      ? '/logo-dark.png'
+      ? logoDark
       : isDark
-      ? '/logo-white.png'
-      : '/logo-dark.png';
+      ? logoWhite
+      : logoDark;
 
   return (
     <img

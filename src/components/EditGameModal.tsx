@@ -163,7 +163,9 @@ export const EditGameModal: React.FC = () => {
             {iconUrl ? (
               <img src={iconUrl} alt="" className="w-6 h-6 rounded-md object-contain shrink-0" />
             ) : (
-              <AppLogo className="w-6 h-6" />
+              <div className="w-7 h-7 rounded-lg bg-white p-1 flex items-center justify-center shadow-xs border border-zinc-200">
+                <AppLogo className="w-full h-full" variant="app" />
+              </div>
             )}
             <div>
               <h2 className="text-sm font-semibold leading-tight line-clamp-1">{title || 'Edit Program Details'}</h2>

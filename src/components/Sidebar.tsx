@@ -10,10 +10,10 @@ import {
   BarChart2,
   HardDrive,
   Layers,
+  Settings,
 } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { HubSettings, PlatformType } from '../types/game';
-import { ThemeSwitcher } from './ThemeSwitcher';
 import { AppLogo } from './AppLogo';
 
 export const Sidebar: React.FC = () => {
@@ -24,6 +24,7 @@ export const Sidebar: React.FC = () => {
     setActivePlatform,
     setSpotlightOpen,
     setStatsOpen,
+    setSettingsOpen,
     scanLibrary,
     isScanning,
   } = useGameStore();
@@ -62,10 +63,10 @@ export const Sidebar: React.FC = () => {
       <div>
         <div className="flex items-center justify-between px-2 py-2 mb-5">
           <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center bg-base border border-subtle shadow-xs p-1.5 overflow-hidden transition-transform hover:scale-105"
+            className="w-10 h-10 rounded-2xl flex items-center justify-center bg-white border border-zinc-200 shadow-xs p-1 overflow-hidden transition-transform hover:scale-105"
             title="GGL - Generic Game Launcher"
           >
-            <AppLogo className="w-full h-full" />
+            <AppLogo className="w-full h-full" variant="app" />
           </div>
 
           <button
@@ -159,9 +160,16 @@ export const Sidebar: React.FC = () => {
           </kbd>
         </button>
 
-        {/* Footer Row: Theme Switcher & Stats */}
+        {/* Footer Row: Settings & Stats */}
         <div className="flex items-center justify-between px-1">
-          <ThemeSwitcher compact direction="up" />
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-muted hover:text-primary hover:bg-surface-hover border border-transparent hover:border-subtle transition-all duration-200 cursor-pointer shadow-xs"
+            title="Open Settings & Themes"
+          >
+            <Settings className="w-3.5 h-3.5" />
+            <span>Settings</span>
+          </button>
 
           <button
             onClick={() => setStatsOpen(true)}

@@ -67,8 +67,10 @@ export const LaunchProcessHUD: React.FC = () => {
         >
           {/* Top Tag & Header Bar */}
           <div className="flex items-center justify-between mb-2 pb-2 border-b border-subtle">
-            <div className="flex items-center gap-1.5">
-              <AppLogo className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-md bg-white p-0.5 flex items-center justify-center shadow-xs border border-zinc-200">
+                <AppLogo className="w-full h-full" variant="app" />
+              </div>
               <span className="text-[10px] font-bold tracking-wider uppercase text-accent">
                 GGL Process Dispatcher
               </span>

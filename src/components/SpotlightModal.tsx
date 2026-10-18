@@ -527,7 +527,9 @@ export const SpotlightModal: React.FC = () => {
         {/* Modal Footer info */}
         <div className="px-4 py-2.5 border-t border-subtle bg-base/50 text-[11px] flex items-center justify-between text-muted">
           <div className="flex items-center gap-2">
-            <AppLogo className="w-4 h-4" />
+            <div className="w-5 h-5 rounded-md bg-white p-0.5 flex items-center justify-center shadow-xs border border-zinc-200">
+              <AppLogo className="w-full h-full" variant="app" />
+            </div>
             <span>GGL &bull; Indexes Desktop, Start Menu, Registry & BlueStacks Games</span>
           </div>
           <div className="flex items-center gap-1.5">

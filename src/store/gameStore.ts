@@ -67,6 +67,7 @@ interface HubStoreState {
   systemApps: DetectedSystemApp[];
   isSpotlightOpen: boolean;
   isStatsOpen: boolean;
+  isSettingsOpen: boolean;
   editingGame: GameItem | null;
   activeLaunch: LaunchProcessState | null;
   activeMenuId: string | null;
@@ -103,6 +104,7 @@ interface HubStoreState {
   dismissLaunchProcess: () => void;
   setSpotlightOpen: (open: boolean) => void;
   setStatsOpen: (open: boolean) => void;
+  setSettingsOpen: (open: boolean) => void;
   setEditingGame: (game: GameItem | null) => void;
   setActiveMenuId: (id: string | null) => void;
 }
@@ -126,9 +128,12 @@ export const useGameStore = create<HubStoreState>((set, get) => ({
   systemApps: [],
   isSpotlightOpen: false,
   isStatsOpen: false,
+  isSettingsOpen: false,
   editingGame: null,
   activeLaunch: null,
   activeMenuId: null,
+
+  setSettingsOpen: (open: boolean) => set({ isSettingsOpen: open }),
 
   setActiveMenuId: (id: string | null) => {
     set({ activeMenuId: id });

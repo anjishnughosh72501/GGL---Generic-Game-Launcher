@@ -92,8 +92,8 @@ export const MainView: React.FC = () => {
       ) : (
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4 border border-subtle bg-surface shadow-xs p-3.5">
-            <AppLogo className="w-full h-full opacity-70" />
+          <div className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4 border border-zinc-200 bg-white shadow-xs p-2">
+            <AppLogo className="w-full h-full" variant="app" />
           </div>
           <h3 className="text-sm font-semibold mb-1 text-primary">
             No items found

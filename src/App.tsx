@@ -6,13 +6,18 @@ import { MainView } from './components/MainView';
 import { SpotlightModal } from './components/SpotlightModal';
 import { EditGameModal } from './components/EditGameModal';
 import { StatsModal } from './components/StatsModal';
+import { SettingsModal } from './components/SettingsModal';
 import { LaunchProcessHUD } from './components/LaunchProcessHUD';
-
 import { applyThemeTokens } from './styles/themes';
-import { AppLogo } from './components/AppLogo';
 
 export const App: React.FC = () => {
-  const { initializeStore, activeMenuId, setActiveMenuId } = useGameStore();
+  const {
+    initializeStore,
+    activeMenuId,
+    setActiveMenuId,
+    isSettingsOpen,
+    setSettingsOpen,
+  } = useGameStore();
 
   useEffect(() => {
     initializeStore();
@@ -39,8 +44,9 @@ export const App: React.FC = () => {
       if (activeMenuId) setActiveMenuId(null);
     };
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && activeMenuId) {
-        setActiveMenuId(null);
+      if (e.key === 'Escape') {
+        if (activeMenuId) setActiveMenuId(null);
+        if (isSettingsOpen) setSettingsOpen(false);
       }
     };
     window.addEventListener('click', handleGlobalClick);
@@ -49,29 +55,16 @@ export const App: React.FC = () => {
       window.removeEventListener('click', handleGlobalClick);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [activeMenuId, setActiveMenuId]);
+  }, [activeMenuId, setActiveMenuId, isSettingsOpen, setSettingsOpen]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden transition-colors duration-200 bg-base text-primary">
       {/* Sidebar (Clean layout, no name on sidebar) */}
       <Sidebar />
 
-      {/* Main Content Area */}
+      {/* Main Content Area (Clean top navigation bar, no redundant top name layer) */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        {/* Electron Window Drag Region with subtle title */}
-        <div
-          className="h-7 w-full shrink-0 select-none flex items-center justify-between px-4 bg-surface/40 border-b border-subtle"
-          style={{ WebkitAppRegion: 'drag' } as any}
-        >
-          <div className="flex items-center gap-2">
-            <AppLogo className="w-3.5 h-3.5" />
-            <span className="text-[10px] font-mono font-semibold tracking-wider text-muted">
-              GGL &bull; Generic Game Launcher
-            </span>
-          </div>
-        </div>
-
-        {/* Top Header */}
+        {/* Top Navigation Bar Header */}
         <Header />
 
         {/* Main Content View (Grid / List) */}
@@ -79,6 +72,9 @@ export const App: React.FC = () => {
           <MainView />
         </main>
       </div>
+
+      {/* Settings Modal Housing Appearance, Themes & Preferences */}
+      <SettingsModal />
 
       {/* Raycast / Spotlight Two-Tiered Add Program Modal */}
       <SpotlightModal />
