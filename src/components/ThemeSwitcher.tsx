@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Laptop, Palette, Check } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { THEMES, ThemePalette, ThemeMode } from '../styles/themes';
+import { AppLogo } from './AppLogo';
 
 interface ThemeSwitcherProps {
   compact?: boolean;
@@ -92,9 +93,10 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
                   <Palette className="w-4 h-4 text-accent" />
                   <span className="text-xs font-semibold tracking-tight">Appearance & Theme</span>
                 </div>
-                <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-surface-hover text-muted border border-subtle">
-                  GGL
-                </span>
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-surface-hover text-muted border border-subtle">
+                  <AppLogo className="w-3.5 h-3.5" />
+                  <span className="text-[10px] uppercase font-mono font-bold">GGL</span>
+                </div>
               </div>
 
               {/* Mode Selector (Dark / Light / Auto) */}

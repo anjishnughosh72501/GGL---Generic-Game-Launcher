@@ -9,6 +9,7 @@ import { StatsModal } from './components/StatsModal';
 import { LaunchProcessHUD } from './components/LaunchProcessHUD';
 
 import { applyThemeTokens } from './styles/themes';
+import { AppLogo } from './components/AppLogo';
 
 export const App: React.FC = () => {
   const { initializeStore, activeMenuId, setActiveMenuId } = useGameStore();
@@ -63,6 +64,7 @@ export const App: React.FC = () => {
           style={{ WebkitAppRegion: 'drag' } as any}
         >
           <div className="flex items-center gap-2">
+            <AppLogo className="w-3.5 h-3.5" />
             <span className="text-[10px] font-mono font-semibold tracking-wider text-muted">
               GGL &bull; Generic Game Launcher
             </span>

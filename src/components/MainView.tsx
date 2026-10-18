@@ -4,6 +4,7 @@ import { Plus, Ghost } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { AppCard } from './AppCard';
 import { AppListView } from './AppListView';
+import { AppLogo } from './AppLogo';
 
 export const MainView: React.FC = () => {
   const {
@@ -91,8 +92,8 @@ export const MainView: React.FC = () => {
       ) : (
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border border-subtle bg-surface text-muted shadow-xs">
-            <Ghost className="w-6 h-6" />
+          <div className="w-16 h-16 rounded-3xl flex items-center justify-center mb-4 border border-subtle bg-surface shadow-xs p-3.5">
+            <AppLogo className="w-full h-full opacity-70" />
           </div>
           <h3 className="text-sm font-semibold mb-1 text-primary">
             No items found

@@ -14,6 +14,7 @@ import {
 import { useGameStore } from '../store/gameStore';
 import { HubSettings, PlatformType } from '../types/game';
 import { ThemeSwitcher } from './ThemeSwitcher';
+import { AppLogo } from './AppLogo';
 
 export const Sidebar: React.FC = () => {
   const {
@@ -60,8 +61,11 @@ export const Sidebar: React.FC = () => {
       {/* Top Header Region (No Name shown on sidebar, per specification) */}
       <div>
         <div className="flex items-center justify-between px-2 py-2 mb-5">
-          <div className="w-9 h-9 rounded-2xl flex items-center justify-center bg-base border border-subtle text-accent shadow-xs">
-            <Layers className="w-4 h-4" />
+          <div
+            className="w-10 h-10 rounded-2xl flex items-center justify-center bg-base border border-subtle shadow-xs p-1.5 overflow-hidden transition-transform hover:scale-105"
+            title="GGL - Generic Game Launcher"
+          >
+            <AppLogo className="w-full h-full" />
           </div>
 
           <button

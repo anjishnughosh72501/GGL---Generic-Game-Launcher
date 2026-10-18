@@ -14,6 +14,7 @@ import {
 import { useGameStore } from '../store/gameStore';
 import { getKnownCoverUrl, resolveAppIcon, resolveGameCover } from '../services/artwork';
 import { showItemInFolder } from '../services/launcher';
+import { AppLogo } from './AppLogo';
 
 type EditTab = 'general' | 'execution' | 'artwork';
 
@@ -162,7 +163,7 @@ export const EditGameModal: React.FC = () => {
             {iconUrl ? (
               <img src={iconUrl} alt="" className="w-6 h-6 rounded-md object-contain shrink-0" />
             ) : (
-              <Layers className="w-5 h-5 text-accent" />
+              <AppLogo className="w-6 h-6" />
             )}
             <div>
               <h2 className="text-sm font-semibold leading-tight line-clamp-1">{title || 'Edit Program Details'}</h2>

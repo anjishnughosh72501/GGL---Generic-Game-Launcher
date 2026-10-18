@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { getMonogram } from '../services/artwork';
+import { AppLogo } from './AppLogo';
 
 export const LaunchProcessHUD: React.FC = () => {
   const { activeLaunch, dismissLaunchProcess } = useGameStore();
@@ -66,9 +67,12 @@ export const LaunchProcessHUD: React.FC = () => {
         >
           {/* Top Tag & Header Bar */}
           <div className="flex items-center justify-between mb-2 pb-2 border-b border-subtle">
-            <span className="text-[10px] font-bold tracking-wider uppercase text-accent">
-              GGL Process Dispatcher
-            </span>
+            <div className="flex items-center gap-1.5">
+              <AppLogo className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold tracking-wider uppercase text-accent">
+                GGL Process Dispatcher
+              </span>
+            </div>
             <button
               onClick={dismissLaunchProcess}
               className="p-1 rounded-lg hover:bg-surface-hover text-muted hover:text-primary transition-colors cursor-pointer"

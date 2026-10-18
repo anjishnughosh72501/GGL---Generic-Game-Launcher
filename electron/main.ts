@@ -28,6 +28,7 @@ function createWindow() {
     minWidth: 920,
     minHeight: 600,
     title: 'GGL - Generic Game Launcher',
+    icon: path.join(__dirname, '../public/logo.png'),
     backgroundColor: '#09090B',
     autoHideMenuBar: true,
     titleBarStyle: 'hidden',

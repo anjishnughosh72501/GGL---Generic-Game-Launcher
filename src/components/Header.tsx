@@ -12,6 +12,7 @@ import {
 import { useGameStore } from '../store/gameStore';
 import { ViewMode, HubSettings } from '../types/game';
 import { ThemeSwitcher } from './ThemeSwitcher';
+import { AppLogo } from './AppLogo';
 
 export const Header: React.FC = () => {
   const {
@@ -42,17 +43,22 @@ export const Header: React.FC = () => {
     <header className="relative z-40 h-16 px-6 border-b border-subtle bg-surface/90 backdrop-blur-md shrink-0 flex items-center justify-between gap-4 transition-colors duration-200">
       {/* App Branding & Search Input */}
       <div className="flex items-center gap-3 flex-1 max-w-lg">
-        {/* GGL Branding Badge */}
+        {/* GGL Branding Badge with Logo */}
         <div
-          className="flex items-center gap-2 select-none shrink-0"
+          className="flex items-center gap-2.5 select-none shrink-0"
           title="GGL - Generic Game Launcher"
         >
-          <div className="flex items-center justify-center px-2.5 py-1 rounded-xl bg-accent text-accent-fg font-black text-xs tracking-wider shadow-xs font-mono">
-            GGL
+          <div className="w-8 h-8 rounded-xl bg-accent text-accent-fg p-1.5 flex items-center justify-center shadow-xs">
+            <AppLogo className="w-full h-full" variant="white" />
           </div>
-          <span className="hidden lg:inline text-xs font-bold text-primary tracking-tight">
-            Generic Game Launcher
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-black tracking-wider font-mono text-primary">
+              GGL
+            </span>
+            <span className="hidden xl:inline text-[11px] font-semibold text-muted tracking-tight">
+              &bull; Generic Game Launcher
+            </span>
+          </div>
         </div>
 
         {/* Search Bar with Full Text Selection & Token Styling */}

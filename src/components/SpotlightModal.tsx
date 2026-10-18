@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { DetectedSystemApp } from '../types/game';
+import { AppLogo } from './AppLogo';
 
 export const SpotlightModal: React.FC = () => {
   const {
@@ -526,7 +527,7 @@ export const SpotlightModal: React.FC = () => {
         {/* Modal Footer info */}
         <div className="px-4 py-2.5 border-t border-subtle bg-base/50 text-[11px] flex items-center justify-between text-muted">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            <AppLogo className="w-4 h-4" />
             <span>GGL &bull; Indexes Desktop, Start Menu, Registry & BlueStacks Games</span>
           </div>
           <div className="flex items-center gap-1.5">

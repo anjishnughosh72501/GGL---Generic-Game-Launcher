@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Trophy, Flame, Layers } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
+import { AppLogo } from './AppLogo';
 
 export const StatsModal: React.FC = () => {
   const { isStatsOpen, setStatsOpen, games } = useGameStore();
@@ -22,9 +23,9 @@ export const StatsModal: React.FC = () => {
       <div className="w-full max-w-xl rounded-2xl border border-subtle bg-surface text-primary shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-subtle">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-accent/15 border border-accent/25 flex items-center justify-center text-accent">
-              <Trophy className="w-4 h-4" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-accent text-accent-fg p-1.5 flex items-center justify-center shadow-xs">
+              <AppLogo className="w-full h-full" variant="white" />
             </div>
             <div>
               <h2 className="text-sm font-semibold text-primary">GGL Telemetry & Insights</h2>
