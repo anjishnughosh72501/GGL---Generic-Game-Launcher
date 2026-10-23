@@ -119,12 +119,18 @@ npm start
 
 ## 📦 Releases & Downloads
 
-Pre-built standalone Windows releases are available in the [GitHub Releases](https://github.com/anjishnughosh72501/GGL---Generic-Game-Launcher/releases) section:
-- **`GGL-Setup-1.0.0.exe`**: Windows 64-bit Installer with desktop and start menu shortcuts.
-- **`GGL-Portable-1.0.0.exe`**: Standalone portable Windows executable (no installation required).
+Download the ready-to-install setup file directly from [GitHub Releases v1.0.0](https://github.com/anjishnughosh72501/GGL---Generic-Game-Launcher/releases/tag/v1.0.0):
 
-> [!NOTE]
-> GGL is a native Windows desktop application designed to interact with the Windows Registry, file system, and native PC games. Mobile package formats (such as Android `.apk`) are not applicable.
+| File | Description | Download |
+| :--- | :--- | :--- |
+| **`setup.exe`** | Universal Windows 64-bit Installer | [⬇️ Download `setup.exe`](https://github.com/anjishnughosh72501/GGL---Generic-Game-Launcher/releases/download/v1.0.0/setup.exe) |
+| **`GGL-Setup-1.0.0.exe`** | Versioned Windows 64-bit Installer | [⬇️ Download `GGL-Setup-1.0.0.exe`](https://github.com/anjishnughosh72501/GGL---Generic-Game-Launcher/releases/download/v1.0.0/GGL-Setup-1.0.0.exe) |
+
+### 🛠️ Installing GGL
+1. Download **`setup.exe`** from the release link above.
+2. Run `setup.exe` on your Windows device (Windows 10 / 11 64-bit).
+3. Follow the setup wizard to choose your preferred installation directory.
+4. GGL will automatically register Start Menu and Desktop shortcuts and configure the uninstaller in Windows Programs & Features.
 
 ---
 
