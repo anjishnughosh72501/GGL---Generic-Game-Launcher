@@ -14,7 +14,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "package": "npm run build && electron-builder --win",
-    "package:dir": "npm run build && electron-builder --dir"
+    "package:dir": "npm run build && electron-builder --dir",
+    "build:setup": "npm run build && electron-builder --win nsis"
   },
   "keywords": [
     "game-launcher",
@@ -58,6 +59,9 @@
   "build": {
     "appId": "com.ggl.gamelauncher",
     "productName": "GGL - Generic Game Launcher",
+    "electronDownload": {
+      "isVerifyChecksum": false
+    },
     "directories": {
       "output": "release"
     },
@@ -69,18 +73,20 @@
     ],
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        "nsis"
       ],
-      "icon": "public/icon.ico"
+      "icon": "public/icon.ico",
+      "artifactName": "GGL-Setup-${version}.${ext}"
     },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
       "perMachine": false,
       "allowElevation": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "GGL - Generic Game Launcher"
+      "shortcutName": "GGL - Generic Game Launcher",
+      "uninstallDisplayName": "GGL - Generic Game Launcher"
     }
   }
 }
