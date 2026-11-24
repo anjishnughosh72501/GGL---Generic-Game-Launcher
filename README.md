@@ -23,8 +23,6 @@
 
 **GGL (Generic Game Launcher)** is a modern, unified desktop application for Windows that aggregates your entire PC gaming and software library across **Steam**, **Epic Games**, **GOG**, **BlueStacks**, and the **Windows Start Menu & Registry**.
 
-Designed from the ground up to replace aggressive, neon gamer-centric launchers with the clean, tactile visual standards of **Apple macOS**, **Spotify**, and **Notion**.
-
 ---
 
 ## ✨ Design Philosophy & Materiality
